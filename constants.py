@@ -1,0 +1,3 @@
+TILE_SIZE = 16
+PACMAN_SIZE = 13
+
