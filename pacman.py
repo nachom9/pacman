@@ -109,7 +109,6 @@ class Pacman:
                 self.y += self.speed
                 self.m_y += self.speed
 
-        print(self.x, self.y)
         return direction
 
     def change_animation(self):
