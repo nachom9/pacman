@@ -49,7 +49,9 @@ def main():
         direction = pacman.move(keys)
         if abs((pacman.prev_x - pacman.x)) + abs((pacman.prev_y - pacman.y)) > 4:
             pacman.change_animation()
-        pacman_surface = spritesheet.subsurface(pygame.Rect(pacman_sprites[direction][pacman.mouth_name]))
+        pacman_surface = pygame.transform.rotate(
+            spritesheet.subsurface(pygame.Rect(pacman_sprites[direction][pacman.mouth_name])),
+            pacman_sprites[direction]["rotation"])
 
         screen.fill((0, 0, 0))
 

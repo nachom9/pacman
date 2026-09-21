@@ -17,7 +17,7 @@ class Pacman:
         self.cell = (size[0] // 2, size[1] // 2)
         self.maze = maze
 
-    def get_sprites(self):
+    def get_sprites_backup(self):
         pacman_coords = {
             "right": {},
             "down": {},
@@ -33,6 +33,31 @@ class Pacman:
             for m in mouths:
                 pacman_coords[d][m] = [x, y, width, height]
                 y += 50
+
+    def get_sprites(self):
+        pacman_coords = {
+            "right": {"rotation": 0},
+            "down": {"rotation": 270},
+            "left": {"rotation": 180},
+            "up": {"rotation": 90},
+            }
+        directions = ["right", "down", "left", "up"]
+        mouths = ["closed", "opened", "full"]
+        x, y = 852, 5
+        width, height = 34, 33
+
+        pacman_coords["right"]["closed"] = [x, y, width, height]
+        pacman_coords["right"]["opened"] = [x, y + 50, width, height]
+        pacman_coords["right"]["full"] = [x, y + 100, width, height]
+        pacman_coords["down"]["closed"] = [x, y, width, height]
+        pacman_coords["down"]["opened"] = [x, y + 50, width, height]
+        pacman_coords["down"]["full"] = [x, y + 100, width, height]
+        pacman_coords["left"]["closed"] = [x, y, width, height]
+        pacman_coords["left"]["opened"] = [x, y + 50, width, height]
+        pacman_coords["left"]["full"] = [x, y + 100, width, height]
+        pacman_coords["up"]["closed"] = [x, y, width, height]
+        pacman_coords["up"]["opened"] = [x, y + 50, width, height]
+        pacman_coords["up"]["full"] = [x, y + 100, width, height]
 
         return pacman_coords
 
