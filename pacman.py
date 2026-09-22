@@ -11,11 +11,12 @@ class Pacman:
         self.m_x = 0
         self.m_y = 0
         self.speed = 2
-        self.movement = 0
+        self.movement = "left"
         self.mouth = 0
         self.mouth_name = "opened"
         self.cell = (size[0] // 2, size[1] // 2)
         self.maze = maze
+        self.direction = "left"
 
     def get_sprites_backup(self):
         pacman_coords = {
@@ -61,55 +62,85 @@ class Pacman:
 
         return pacman_coords
 
-    def move(self, keys):
-        direction = "left"
+    def predict_move(self):
+        if self.direction == "left":
+                self.x -= self.speed
+                self.m_x -= self.speed
+                self.movement = "left"
+        elif self.direction == "right":
+                self.x += self.speed
+                self.m_x += self.speed
+                self.movement = "right"
+        elif self.direction == "up":
+                self.y -= self.speed
+                self.m_y -= self.speed
+                self.movement = "up"
+        elif self.direction == "down":
+                self.y += self.speed
+                self.m_y += self.speed
+                self.movement = "down"
+
+    def move(self, keys, drawn_maze):
         row, col = self.y // 54, self.x // 54
         self.cell = (row, col)
         c = self.maze[row][col]
         if keys[pygame.K_LEFT]:
-            self.movement = 1
+            self.movement = "left"
         if keys[pygame.K_RIGHT]:
-            self.movement = 2
+            self.movement = "right"
         if keys[pygame.K_UP]:
-            self.movement = 3
+            self.movement = "up"
         if keys[pygame.K_DOWN]:
-            self.movement = 4
+            self.movement = "down"
 
-
-        if self.movement == 1:
-            direction = "left"
+        if self.movement == "left":
             row, col = (self.y) // 54, (self.x + 42) // 54
+            row_n, col_n = (self.y + 54) // 54, (self.x + 81) // 54
             c = self.maze[row][col]
-            if (not (c == 8 or c == 9 or c == 10 or c == 11 or c == 12 or c == 13 or c == 14 or c == 15) and
-                self.m_y % 54 == 0):
-                self.x -= self.speed
-                self.m_x -= self.speed
-        elif self.movement == 2:
-            direction = "right"
+            if not (c == 8 or c == 9 or c == 10 or c == 11 or c == 12 or c == 13 or c == 14 or c == 15):
+                if self.m_y % 54 == 0:
+                    self.x -= self.speed
+                    self.m_x -= self.speed
+                    self.direction = "left"
+                    drawn_maze.cells_gums[(row_n, col_n)] = False
+                else:
+                    self.predict_move()
+        elif self.movement == "right":
             row, col = (self.y) // 54, (self.x - 10) // 54
+            row_n, col_n = (self.y + 54) // 54, (self.x + 54) // 54
             c = self.maze[row][col]
-            if (not (c == 2 or c == 3 or c == 6 or c == 7 or c == 10 or c == 11 or c == 14 or c == 15) and
-                self.m_y % 54 == 0):
-                self.x += self.speed
-                self.m_x += self.speed
-        elif self.movement == 3:
-            direction = "up"
+            if not (c == 2 or c == 3 or c == 6 or c == 7 or c == 10 or c == 11 or c == 14 or c == 15):
+                if self.m_y % 54 == 0:
+                    self.x += self.speed
+                    self.m_x += self.speed
+                    self.direction = "right"
+                    drawn_maze.cells_gums[(row_n, col_n)] = False
+                else:
+                    self.predict_move()
+        elif self.movement == "up":
             row, col = (self.y + 41) // 54, self.x // 54
+            row_n, col_n = (self.y + 81) // 54, (self.x + 54) // 54
             c = self.maze[row][col]
-            if (not (c == 1 or c == 3 or c == 5 or c == 7 or c == 9 or c == 11 or c == 13 or c == 15) and
-                self.m_x % 54 == 0):
-                self.y -= self.speed
-                self.m_y -= self.speed
-        elif self.movement == 4:
-            direction = "down"
+            if not (c == 1 or c == 3 or c == 5 or c == 7 or c == 9 or c == 11 or c == 13 or c == 15):
+                if self.m_x % 54 == 0:
+                    self.y -= self.speed
+                    self.m_y -= self.speed
+                    self.direction = "up"
+                    drawn_maze.cells_gums[(row_n, col_n)] = False
+                else:
+                    self.predict_move()
+        elif self.movement == "down":
             row, col = (self.y - 10) // 54, self.x // 54
+            row_n, col_n = (self.y + 54) // 54, (self.x + 54) // 54
             c = self.maze[row][col]
-            if (not (c == 4 or c == 5 or c == 6 or c == 7 or c == 12 or c == 13 or c == 14 or c == 15) and
-                self.m_x % 54 == 0):
-                self.y += self.speed
-                self.m_y += self.speed
-
-        return direction
+            if not (c == 4 or c == 5 or c == 6 or c == 7 or c == 12 or c == 13 or c == 14 or c == 15):
+                if self.m_x % 54 == 0:
+                    self.y += self.speed
+                    self.m_y += self.speed
+                    self.direction = "down"
+                    drawn_maze.cells_gums[(row_n, col_n)] = False
+                else:
+                    self.predict_move()
 
     def change_animation(self):
         self.prev_x = self.x
@@ -122,10 +153,3 @@ class Pacman:
             self.mouth += 1
 
         self.mouth_name = mouths[self.mouth]
-
-
-
-
-
-
-

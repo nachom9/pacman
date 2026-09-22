@@ -37,7 +37,7 @@ def main():
 
 
 
-    maze_surface = drawn_maze.draw_maze()
+    map_surface = drawn_maze.draw_map()
 
 
     while running:
@@ -46,16 +46,19 @@ def main():
                 running = False
 
         keys = pygame.key.get_pressed()
-        direction = pacman.move(keys)
+        pacman.move(keys, drawn_maze)
         if abs((pacman.prev_x - pacman.x)) + abs((pacman.prev_y - pacman.y)) > 4:
             pacman.change_animation()
         pacman_surface = pygame.transform.rotate(
-            spritesheet.subsurface(pygame.Rect(pacman_sprites[direction][pacman.mouth_name])),
-            pacman_sprites[direction]["rotation"])
+            spritesheet.subsurface(pygame.Rect(pacman_sprites[pacman.direction][pacman.mouth_name])),
+            pacman_sprites[pacman.direction]["rotation"])
 
         screen.fill((0, 0, 0))
 
-        screen.blit(maze_surface, (0, 0))
+
+        screen.blit(map_surface, (0, 0))
+        pacgums_surface = drawn_maze.draw_pacgums()
+        screen.blit(pacgums_surface, (0, 0))
         screen.blit(pacman_surface, (pacman.x, pacman.y))
 
         pygame.display.flip()
