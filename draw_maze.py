@@ -11,8 +11,8 @@ class DrawnMaze:
     def draw_map(self):
         z = 9
         a = 4
-        map_surface = pygame.Surface((self.size[0] * 54, self.size[1] * 54))
-        x, y = 0, 0
+        map_surface = pygame.Surface((self.size[0] * 54 + 9, self.size[1] * 54 + 9))
+        x, y = 4, 4
         for row in self.cells:
             for col in row:
                 c = col
@@ -29,8 +29,26 @@ class DrawnMaze:
                 pygame.draw.line(map_surface, (33, 33, 222), (x - a, y + z - a), (x + z - a, y + z - a), 1)
                 pygame.draw.line(map_surface, (33, 33, 222), (x - a, y - a), (x - a, y + z - a), 1)
                 x += 54
-            x = 0
+                print(x)
+            x = 4
             y += 54
+        x = 54 * len(self.cells) + 4
+        y = 4
+        for row in self.cells:
+            pygame.draw.line(map_surface, (33, 33, 222), (x - a, y - a), (x + z - a, y - a), 1)
+            pygame.draw.line(map_surface, (33, 33, 222), (x + z - a, y - a), (x + z - a, y + z - a), 1)
+            pygame.draw.line(map_surface, (33, 33, 222), (x - a, y + z - a), (x + z - a, y + z - a), 1)
+            pygame.draw.line(map_surface, (33, 33, 222), (x - a, y - a), (x - a, y + z - a), 1)
+            y += 54
+
+        x = 4
+        y = 54 * len(self.cells) + 4
+        for col in range(len(self.cells[0]) + 1):
+            pygame.draw.line(map_surface, (33, 33, 222), (x - a, y - a), (x + z - a, y - a), 1)
+            pygame.draw.line(map_surface, (33, 33, 222), (x + z - a, y - a), (x + z - a, y + z - a), 1)
+            pygame.draw.line(map_surface, (33, 33, 222), (x - a, y + z - a), (x + z - a, y + z - a), 1)
+            pygame.draw.line(map_surface, (33, 33, 222), (x - a, y - a), (x - a, y + z - a), 1)
+            x += 54
 
         return map_surface
 

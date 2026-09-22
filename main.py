@@ -27,7 +27,7 @@ def main():
     pacman = Pacman(size, maze)
 
     pygame.init()
-    screen = pygame.display.set_mode((size[0] * 54, size[1] * 54))
+    screen = pygame.display.set_mode((size[0] * 54 + 10, size[1] * 54 + 10))
     clock = pygame.time.Clock()
     pygame.display.set_caption("Pacman")
     running = True

@@ -4,10 +4,10 @@ class Pacman:
     def __init__(self, size, maze):
         self.sprites = self.get_sprites()
         self.direction = 0
-        self.x = (len(maze[0]) // 2 * 54) + 11
-        self.y = (len(maze) // 2 * 54) + 11
-        self.prev_x = (len(maze[0]) // 2 * 54) + 11
-        self.prev_y = (len(maze) // 2 * 54) + 11
+        self.x = (len(maze[0]) // 2 * 54) + 15
+        self.y = (len(maze) // 2 * 54) + 15
+        self.prev_x = (len(maze[0]) // 2 * 54) + 15
+        self.prev_y = (len(maze) // 2 * 54) + 15
         self.m_x = 0
         self.m_y = 0
         self.speed = 2
@@ -17,6 +17,7 @@ class Pacman:
         self.cell = (size[0] // 2, size[1] // 2)
         self.maze = maze
         self.direction = "left"
+        self.score = 0
 
     def get_sprites_backup(self):
         pacman_coords = {
@@ -94,51 +95,63 @@ class Pacman:
             self.movement = "down"
 
         if self.movement == "left":
-            row, col = (self.y) // 54, (self.x + 42) // 54
-            row_n, col_n = (self.y + 54) // 54, (self.x + 81) // 54
+            row, col = (self.y - 4) // 54, (self.x + 38) // 54
+            row_n, col_n = (self.y + 50) // 54, (self.x + 77) // 54
             c = self.maze[row][col]
             if not (c == 8 or c == 9 or c == 10 or c == 11 or c == 12 or c == 13 or c == 14 or c == 15):
                 if self.m_y % 54 == 0:
                     self.x -= self.speed
                     self.m_x -= self.speed
                     self.direction = "left"
-                    drawn_maze.cells_gums[(row_n, col_n)] = False
+                    if drawn_maze.cells_gums[(row_n, col_n)]:
+                        self.score += 20
+                        drawn_maze.cells_gums[(row_n, col_n)] = False
+                        print(self.score)
                 else:
                     self.predict_move()
         elif self.movement == "right":
-            row, col = (self.y) // 54, (self.x - 10) // 54
-            row_n, col_n = (self.y + 54) // 54, (self.x + 54) // 54
+            row, col = (self.y - 4) // 54, (self.x - 14) // 54
+            row_n, col_n = (self.y + 50) // 54, (self.x + 50) // 54
             c = self.maze[row][col]
             if not (c == 2 or c == 3 or c == 6 or c == 7 or c == 10 or c == 11 or c == 14 or c == 15):
                 if self.m_y % 54 == 0:
                     self.x += self.speed
                     self.m_x += self.speed
                     self.direction = "right"
-                    drawn_maze.cells_gums[(row_n, col_n)] = False
+                    if drawn_maze.cells_gums[(row_n, col_n)]:
+                        self.score += 20
+                        drawn_maze.cells_gums[(row_n, col_n)] = False
+                        print(self.score)
                 else:
                     self.predict_move()
         elif self.movement == "up":
-            row, col = (self.y + 41) // 54, self.x // 54
-            row_n, col_n = (self.y + 81) // 54, (self.x + 54) // 54
+            row, col = (self.y + 37) // 54, (self.x - 4) // 54
+            row_n, col_n = (self.y + 77) // 54, (self.x + 50) // 54
             c = self.maze[row][col]
             if not (c == 1 or c == 3 or c == 5 or c == 7 or c == 9 or c == 11 or c == 13 or c == 15):
                 if self.m_x % 54 == 0:
                     self.y -= self.speed
                     self.m_y -= self.speed
                     self.direction = "up"
-                    drawn_maze.cells_gums[(row_n, col_n)] = False
+                    if drawn_maze.cells_gums[(row_n, col_n)]:
+                        self.score += 20
+                        drawn_maze.cells_gums[(row_n, col_n)] = False
+                        print(self.score)
                 else:
                     self.predict_move()
         elif self.movement == "down":
-            row, col = (self.y - 10) // 54, self.x // 54
-            row_n, col_n = (self.y + 54) // 54, (self.x + 54) // 54
+            row, col = (self.y - 14) // 54, (self.x - 4) // 54
+            row_n, col_n = (self.y + 50) // 54, (self.x + 50) // 54
             c = self.maze[row][col]
             if not (c == 4 or c == 5 or c == 6 or c == 7 or c == 12 or c == 13 or c == 14 or c == 15):
                 if self.m_x % 54 == 0:
                     self.y += self.speed
                     self.m_y += self.speed
                     self.direction = "down"
-                    drawn_maze.cells_gums[(row_n, col_n)] = False
+                    if drawn_maze.cells_gums[(row_n, col_n)]:
+                        self.score += 20
+                        drawn_maze.cells_gums[(row_n, col_n)] = False
+                        print(self.score)
                 else:
                     self.predict_move()
 
