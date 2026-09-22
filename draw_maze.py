@@ -53,31 +53,31 @@ class DrawnMaze:
         return map_surface
 
     def init_pacgums(self):
-        x, y = 27, 27
+        x, y = 31, 31
         cells_gums = {}
 
         for row in self.cells:
             for col in row:
                 if col != 15:
-                    row, col = (y + 27) // 54, (x + 27) // 54
+                    row, col = (y + 31) // 54, (x + 31) // 54
                     cells_gums[(row, col)] = True
                 x += 54
-            x = 27
+            x = 31
             y += 54
 
         return cells_gums
 
     def draw_pacgums(self):
         pacgums_surface = pygame.Surface((self.size[0] * 54, self.size[1] * 54), pygame.SRCALPHA)
-        x, y = 27, 27
+        x, y = 31, 31
 
         for row in self.cells:
             for col in row:
-                row_n, col_n = (y + 27) // 54, (x + 27) // 54
+                row_n, col_n = (y + 31) // 54, (x + 31) // 54
                 if col != 15 and not (self.cells_gums[(row_n, col_n)] == False):
                     pygame.draw.circle(pacgums_surface, (222, 161, 133), (x, y), 4)
                 x += 54
-            x = 27
+            x = 31
             y += 54
 
         return pacgums_surface
