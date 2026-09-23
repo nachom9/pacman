@@ -70,12 +70,14 @@ class DrawnMaze:
     def draw_pacgums(self):
         pacgums_surface = pygame.Surface((self.size[0] * 54, self.size[1] * 54), pygame.SRCALPHA)
         x, y = 31, 31
+        self.win_check = True
 
         for row in self.cells:
             for col in row:
                 row_n, col_n = (y + 31) // 54, (x + 31) // 54
                 if col != 15 and not (self.cells_gums[(row_n, col_n)] == False):
                     pygame.draw.circle(pacgums_surface, (222, 161, 133), (x, y), 4)
+                    self.win_check = False
                 x += 54
             x = 31
             y += 54
