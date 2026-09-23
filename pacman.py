@@ -19,23 +19,6 @@ class Pacman:
         self.direction = "left"
         self.score = 0
 
-    def get_sprites_backup(self):
-        pacman_coords = {
-            "right": {},
-            "down": {},
-            "left": {},
-            "up": {}
-            }
-        directions = ["right", "down", "left", "up"]
-        mouths = ["closed", "opened", "full"]
-        x, y = 852, 5
-        width, height = 34, 33
-
-        for d in directions:
-            for m in mouths:
-                pacman_coords[d][m] = [x, y, width, height]
-                y += 50
-
     def get_sprites(self):
         pacman_coords = {
             "right": {"rotation": 0},

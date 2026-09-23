@@ -2,7 +2,6 @@
 
 from mazegenerator import MazeGenerator
 from pacman import Pacman
-from maze import Cell
 from draw_maze import DrawnMaze
 import pygame
 
@@ -34,8 +33,6 @@ def main():
 
     pacman_sprites = pacman.get_sprites()
     spritesheet = pygame.image.load("sprites.png").convert_alpha()
-
-
 
     map_surface = drawn_maze.draw_map()
 
