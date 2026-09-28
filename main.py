@@ -31,7 +31,15 @@ def main():
     orange_ghost = Ghost(size, maze, "orange")
 
     pygame.init()
-    screen = pygame.display.set_mode((size[0] * 54 + 10, size[1] * 54 + 10))
+    maze_width = size[0] * 54 + 10
+    maze_height = size[1] * 54 + 10
+
+    top_space = 100
+    bottom_space = 60
+
+    screen = pygame.display.set_mode(
+        (maze_width, maze_height + top_space + bottom_space)
+    )
     clock = pygame.time.Clock()
     pygame.display.set_caption("Pacman")
     running = True
@@ -42,6 +50,7 @@ def main():
 
     map_surface = drawn_maze.draw_map()
 
+    font = pygame.font.Font("fonts/PressStart2P-Regular.ttf", 25)
 
     while running:
         for event in pygame.event.get():
@@ -63,15 +72,41 @@ def main():
         screen.fill((0, 0, 0))
 
 
-        screen.blit(map_surface, (0, 0))
+        screen.blit(map_surface, (0, top_space))
         pacgums_surface = drawn_maze.draw_pacgums()
-        screen.blit(pacgums_surface, (0, 0))
-        screen.blit(red_ghost_surface, (red_ghost.x, red_ghost.y))
-        screen.blit(pink_ghost_surface, (pink_ghost.x, pink_ghost.y))
-        screen.blit(blue_ghost_surface, (blue_ghost.x, blue_ghost.y))
-        screen.blit(orange_ghost_surface, (orange_ghost.x, orange_ghost.y))
-        screen.blit(pacman_surface, (pacman.x, pacman.y))
+        screen.blit(pacgums_surface, (0, top_space))
+        screen.blit(
+            red_ghost_surface,
+            (red_ghost.x, red_ghost.y + top_space)
+        )
+        screen.blit(
+            pink_ghost_surface,
+            (pink_ghost.x, pink_ghost.y + top_space)
+        )
+        screen.blit(
+            blue_ghost_surface,
+            (blue_ghost.x, blue_ghost.y + top_space)
+        )
+        screen.blit(
+            orange_ghost_surface,
+            (orange_ghost.x, orange_ghost.y + top_space)
+        )
+        screen.blit(
+            pacman_surface,
+            (pacman.x, pacman.y + top_space)
+        )
 
+        score_label = font.render("SCORE", True, (255, 255, 255))
+        score_value = font.render(str(pacman.score), True, (255, 255, 255))
+
+        score_label_rect = score_label.get_rect()
+        score_value_rect = score_value.get_rect()
+
+        score_label_rect.center = (screen.get_width() // 2, 30)
+        score_value_rect.center = (screen.get_width() // 2, 65)
+
+        screen.blit(score_label, score_label_rect)
+        screen.blit(score_value, score_value_rect)
 
         pygame.display.flip()
         clock.tick(60)
