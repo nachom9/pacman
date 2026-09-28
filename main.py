@@ -51,7 +51,7 @@ def main():
 
     map_surface = drawn_maze.draw_map()
 
-    hud = HUD(screen.get_width(), spritesheet)
+    hud = HUD(screen.get_width(), screen.get_height(), spritesheet)
 
     while running:
         for event in pygame.event.get():
@@ -99,6 +99,7 @@ def main():
 
         hud.draw_score(screen, pacman.score)
         hud.draw_lives(screen, pacman.lives)
+        hud.draw_level(screen, 7)
 
         pygame.display.flip()
         clock.tick(60)

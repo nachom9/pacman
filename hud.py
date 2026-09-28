@@ -2,11 +2,16 @@ import pygame
 
 
 class HUD:
-    def __init__(self, screen_width, spritesheet):
+    def __init__(self, screen_width, screen_height, spritesheet):
         self.screen_width = screen_width
+        self.screen_height = screen_height
         self.font = pygame.font.Font(
             "assets/fonts/PressStart2P-Regular.ttf",
             25
+        )
+        self.font_small = pygame.font.Font(
+            "assets/fonts/PressStart2P-Regular.ttf",
+            18
         )
         self.lives_sprite = spritesheet.subsurface(pygame.Rect(595, 601, 24, 26))
 
@@ -53,3 +58,9 @@ class HUD:
                 lives_text,
                 (x + 45, y + 5)
             )
+
+    def draw_level(self, screen, level):
+        level_label = self.font_small.render(f"LEVEL {level}", True, (255, 255, 255))
+        level_label_rect = level_label.get_rect()
+        level_label_rect.center = (self.screen_width - 95, self.screen_height - 32)    
+        screen.blit(level_label, level_label_rect)
