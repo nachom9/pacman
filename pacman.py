@@ -2,7 +2,6 @@ import pygame
 
 class Pacman:
     def __init__(self, size, maze):
-        self.sprites = self.get_sprites()
         self.direction = 0
         self.x = (len(maze[0]) // 2 * 54) + 15
         self.y = (len(maze) // 2 * 54) + 15

@@ -2,6 +2,7 @@
 
 from mazegenerator import MazeGenerator
 from pacman import Pacman
+from ghosts import Ghost
 from draw_maze import DrawnMaze
 import pygame
 
@@ -24,6 +25,10 @@ def main():
     )
 
     pacman = Pacman(size, maze)
+    red_ghost = Ghost(size, maze, "red")
+    pink_ghost = Ghost(size, maze, "pink")
+    blue_ghost = Ghost(size, maze, "blue")
+    orange_ghost = Ghost(size, maze, "orange")
 
     pygame.init()
     screen = pygame.display.set_mode((size[0] * 54 + 10, size[1] * 54 + 10))
@@ -32,6 +37,7 @@ def main():
     running = True
 
     pacman_sprites = pacman.get_sprites()
+    ghosts_sprites = red_ghost.get_sprites()
     spritesheet = pygame.image.load("sprites.png").convert_alpha()
 
     map_surface = drawn_maze.draw_map()
@@ -49,6 +55,10 @@ def main():
         pacman_surface = pygame.transform.rotate(
             spritesheet.subsurface(pygame.Rect(pacman_sprites[pacman.direction][pacman.mouth_name])),
             pacman_sprites[pacman.direction]["rotation"])
+        red_ghost_surface = spritesheet.subsurface(pygame.Rect(ghosts_sprites[red_ghost.color][red_ghost.direction][red_ghost.frame]))
+        pink_ghost_surface = spritesheet.subsurface(pygame.Rect(ghosts_sprites[pink_ghost.color][pink_ghost.direction][pink_ghost.frame]))
+        blue_ghost_surface = spritesheet.subsurface(pygame.Rect(ghosts_sprites[blue_ghost.color][blue_ghost.direction][blue_ghost.frame]))
+        orange_ghost_surface = spritesheet.subsurface(pygame.Rect(ghosts_sprites[orange_ghost.color][orange_ghost.direction][orange_ghost.frame]))
 
         screen.fill((0, 0, 0))
 
@@ -56,7 +66,12 @@ def main():
         screen.blit(map_surface, (0, 0))
         pacgums_surface = drawn_maze.draw_pacgums()
         screen.blit(pacgums_surface, (0, 0))
+        screen.blit(red_ghost_surface, (red_ghost.x, red_ghost.y))
+        screen.blit(pink_ghost_surface, (pink_ghost.x, pink_ghost.y))
+        screen.blit(blue_ghost_surface, (blue_ghost.x, blue_ghost.y))
+        screen.blit(orange_ghost_surface, (orange_ghost.x, orange_ghost.y))
         screen.blit(pacman_surface, (pacman.x, pacman.y))
+
 
         pygame.display.flip()
         clock.tick(60)
