@@ -2,6 +2,7 @@ import pygame
 
 class Pacman:
     def __init__(self, size, maze):
+        self.lives = 3
         self.direction = 0
         self.x = (len(maze[0]) // 2 * 54) + 15
         self.y = (len(maze) // 2 * 54) + 15
@@ -88,7 +89,6 @@ class Pacman:
                     if drawn_maze.cells_gums[(row_n, col_n)]:
                         self.score += 20
                         drawn_maze.cells_gums[(row_n, col_n)] = False
-                        print(self.score)
                 else:
                     self.predict_move()
         elif self.movement == "right":
@@ -103,7 +103,6 @@ class Pacman:
                     if drawn_maze.cells_gums[(row_n, col_n)]:
                         self.score += 20
                         drawn_maze.cells_gums[(row_n, col_n)] = False
-                        print(self.score)
                 else:
                     self.predict_move()
         elif self.movement == "up":
@@ -118,7 +117,6 @@ class Pacman:
                     if drawn_maze.cells_gums[(row_n, col_n)]:
                         self.score += 20
                         drawn_maze.cells_gums[(row_n, col_n)] = False
-                        print(self.score)
                 else:
                     self.predict_move()
         elif self.movement == "down":
@@ -133,7 +131,6 @@ class Pacman:
                     if drawn_maze.cells_gums[(row_n, col_n)]:
                         self.score += 20
                         drawn_maze.cells_gums[(row_n, col_n)] = False
-                        print(self.score)
                 else:
                     self.predict_move()
 

@@ -4,6 +4,7 @@ from mazegenerator import MazeGenerator
 from pacman import Pacman
 from ghosts import Ghost
 from draw_maze import DrawnMaze
+from hud import HUD
 import pygame
 
 
@@ -46,11 +47,11 @@ def main():
 
     pacman_sprites = pacman.get_sprites()
     ghosts_sprites = red_ghost.get_sprites()
-    spritesheet = pygame.image.load("sprites.png").convert_alpha()
+    spritesheet = pygame.image.load("assets/sprites.png").convert_alpha()
 
     map_surface = drawn_maze.draw_map()
 
-    font = pygame.font.Font("fonts/PressStart2P-Regular.ttf", 25)
+    hud = HUD(screen.get_width(), spritesheet)
 
     while running:
         for event in pygame.event.get():
@@ -96,17 +97,8 @@ def main():
             (pacman.x, pacman.y + top_space)
         )
 
-        score_label = font.render("SCORE", True, (255, 255, 255))
-        score_value = font.render(str(pacman.score), True, (255, 255, 255))
-
-        score_label_rect = score_label.get_rect()
-        score_value_rect = score_value.get_rect()
-
-        score_label_rect.center = (screen.get_width() // 2, 30)
-        score_value_rect.center = (screen.get_width() // 2, 65)
-
-        screen.blit(score_label, score_label_rect)
-        screen.blit(score_value, score_value_rect)
+        hud.draw_score(screen, pacman.score)
+        hud.draw_lives(screen, pacman.lives)
 
         pygame.display.flip()
         clock.tick(60)

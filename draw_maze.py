@@ -29,7 +29,6 @@ class DrawnMaze:
                 pygame.draw.line(map_surface, (33, 33, 222), (x - a, y + z - a), (x + z - a, y + z - a), 1)
                 pygame.draw.line(map_surface, (33, 33, 222), (x - a, y - a), (x - a, y + z - a), 1)
                 x += 54
-                print(x)
             x = 4
             y += 54
         x = 54 * len(self.cells) + 4
