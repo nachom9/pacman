@@ -35,6 +35,8 @@ class Ghost:
             self.movement = "left"
             self.cell = (size[0] - 1, size[1] - 1)
 
+        self.m_x = 0
+        self.m_y = 0
         self.color = color
         self.speed = 2
         self.frame = '0'
@@ -100,18 +102,31 @@ class Ghost:
                 self.m_y += self.speed
                 self.movement = "down"
 
-    def move(self, next_step, drawn_maze):
+    def move(self, drawn_maze, target_cell):
+        next_step = self.path_finding(target_cell, drawn_maze)
         row, col = self.y // 54, self.x // 54
         self.cell = (row, col)
         c = self.maze[row][col]
         if next_step == "left":
             self.movement = "left"
+            if self.m_y % 54 != 0:
+                self.predict_move()
+                return
         if next_step == "right":
             self.movement = "right"
+            if self.m_y % 54 != 0:
+                self.predict_move()
+                return
         if next_step == "up":
             self.movement = "up"
+            if self.m_x % 54 != 0:
+                self.predict_move()
+                return
         if next_step == "down":
             self.movement = "down"
+            if self.m_x % 54 != 0:
+                self.predict_move()
+                return
 
         if self.movement == "left":
             row, col = (self.y - 4) // 54, (self.x + 38) // 54
@@ -202,7 +217,7 @@ class Ghost:
         path.reverse()
         steps.reverse()
 
-        return path
+        return steps[0]
 
 
 

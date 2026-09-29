@@ -54,7 +54,6 @@ def main():
     hud = HUD(screen.get_width(), screen.get_height(), spritesheet)
     start_time = pygame.time.get_ticks()
 
-    print(orange_ghost.path_finding((0, 0), drawn_maze))
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -62,6 +61,7 @@ def main():
 
         keys = pygame.key.get_pressed()
         pacman.move(keys, drawn_maze)
+        orange_ghost.move(drawn_maze, (pacman.cell))
         if abs((pacman.prev_x - pacman.x)) + abs((pacman.prev_y - pacman.y)) > 4:
             pacman.change_animation()
         pacman_surface = pygame.transform.rotate(
