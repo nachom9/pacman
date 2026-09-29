@@ -162,19 +162,20 @@ class Ghost:
     def get_neighbors(current, c):
         neighbors = []
         if c >= 0 and c <= 7:
-            neighbors.append((current[0], current[1] - 1))
+            neighbors.append([(current[0], current[1] - 1), "left"])
         if c == 0 or c == 1 or c == 4 or c == 5 or c == 8 or c == 9 or c == 12 or c == 13:
-            neighbors.append((current[0], current[1] + 1))
+            neighbors.append([(current[0], current[1] + 1), "right"])
         if c == 0 or c == 2 or c == 4 or c == 6 or c == 8 or c == 10 or c == 12 or c == 14:
-            neighbors.append((current[0] - 1, current[1]))
+            neighbors.append([(current[0] - 1, current[1]), "up"])
         if c == 0 or c == 1 or c == 2 or c == 3 or c == 8 or c == 9 or c == 10 or c == 11:
-            neighbors.append((current[0] + 1, current[1]))
+            neighbors.append([(current[0] + 1, current[1]), "down"])
 
         return neighbors
 
     def path_finding(self, target_cell, drawn_maze):
         visited = {}
         path = []
+        steps = []
         queue = [self.cell]
 
         while queue:
@@ -182,17 +183,24 @@ class Ghost:
             row, col = current
             c = self.maze[row][col]
             neighbors = self.get_neighbors(current, c)
-            for neighbor in neighbors:
+            for neighbor, step in neighbors:
                 if neighbor not in visited:
                     queue.append(neighbor)
-                    visited[neighbor] = current
+                    visited[neighbor] = [current, step]
+
 
         path.append(target_cell)
-        next_cell = visited[target_cell]
+        next_cell = visited[target_cell][0]
+        next_step = visited[target_cell][1]
         while self.cell not in path:
             temp_cell = next_cell
+            steps.append(next_step)
             path.append(next_cell)
-            next_cell = visited[temp_cell]
+            next_cell = visited[temp_cell][0]
+            next_step = visited[temp_cell][1]
+
+        path.reverse()
+        steps.reverse()
 
         return path
 
