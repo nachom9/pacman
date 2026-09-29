@@ -1,4 +1,4 @@
-#!/home/diegov/42madrid/pacman/.venv/bin/python3
+#!/home/nacho/42/pacman/.venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

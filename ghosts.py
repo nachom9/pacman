@@ -10,30 +10,30 @@ class Ghost:
             self.direction = "right"
             self.movement = "right"
             self.cell = (0, 0)
-        if color == "pink":
+        elif color == "pink":
             self.x = (size[0] - 1) * 54 + 15
             self.y = 15
             self.prev_x = (size[0] - 1) * 54 + 15
             self.prev_y = 15
             self.direction = "left"
             self.movement = "left"
-            self.cell = (size[0], 0)
-        if color == "blue":
+            self.cell = (size[0] - 1, 0)
+        elif color == "blue":
             self.x = 15
             self.y = (size[1] - 1) * 54 + 15
             self.prev_x = 15
             self.prev_y = (size[1] - 1) * 54 + 15
             self.direction = "right"
             self.movement = "right"
-            self.cell = (0, size[1])
-        if color == "orange":
+            self.cell = (0, size[1] - 1)
+        elif color == "orange":
             self.x = (size[0] - 1) * 54 + 15
             self.y = (size[1] - 1) * 54 + 15
             self.prev_x = (size[0] - 1) * 54 + 15
             self.prev_y = (size[1] - 1) * 54 + 15
             self.direction = "left"
             self.movement = "left"
-            self.cell = (size[0], size[1])
+            self.cell = (size[0] - 1, size[1] - 1)
 
         self.color = color
         self.speed = 2
@@ -80,5 +80,123 @@ class Ghost:
                     y += 50
             y = 4
             x += +50
-        print (ghosts)
+
         return ghosts
+    def predict_move(self):
+        if self.direction == "left":
+                self.x -= self.speed
+                self.m_x -= self.speed
+                self.movement = "left"
+        elif self.direction == "right":
+                self.x += self.speed
+                self.m_x += self.speed
+                self.movement = "right"
+        elif self.direction == "up":
+                self.y -= self.speed
+                self.m_y -= self.speed
+                self.movement = "up"
+        elif self.direction == "down":
+                self.y += self.speed
+                self.m_y += self.speed
+                self.movement = "down"
+
+    def move(self, next_step, drawn_maze):
+        row, col = self.y // 54, self.x // 54
+        self.cell = (row, col)
+        c = self.maze[row][col]
+        if next_step == "left":
+            self.movement = "left"
+        if next_step == "right":
+            self.movement = "right"
+        if next_step == "up":
+            self.movement = "up"
+        if next_step == "down":
+            self.movement = "down"
+
+        if self.movement == "left":
+            row, col = (self.y - 4) // 54, (self.x + 38) // 54
+            row_n, col_n = (self.y + 50) // 54, (self.x + 77) // 54
+            c = self.maze[row][col]
+            if not (c == 8 or c == 9 or c == 10 or c == 11 or c == 12 or c == 13 or c == 14 or c == 15):
+                if self.m_y % 54 == 0:
+                    self.x -= self.speed
+                    self.m_x -= self.speed
+                    self.direction = "left"
+                else:
+                    self.predict_move()
+        elif self.movement == "right":
+            row, col = (self.y - 4) // 54, (self.x - 14) // 54
+            row_n, col_n = (self.y + 50) // 54, (self.x + 50) // 54
+            c = self.maze[row][col]
+            if not (c == 2 or c == 3 or c == 6 or c == 7 or c == 10 or c == 11 or c == 14 or c == 15):
+                if self.m_y % 54 == 0:
+                    self.x += self.speed
+                    self.m_x += self.speed
+                    self.direction = "right"
+                else:
+                    self.predict_move()
+        elif self.movement == "up":
+            row, col = (self.y + 37) // 54, (self.x - 4) // 54
+            row_n, col_n = (self.y + 77) // 54, (self.x + 50) // 54
+            c = self.maze[row][col]
+            if not (c == 1 or c == 3 or c == 5 or c == 7 or c == 9 or c == 11 or c == 13 or c == 15):
+                if self.m_x % 54 == 0:
+                    self.y -= self.speed
+                    self.m_y -= self.speed
+                    self.direction = "up"
+                else:
+                    self.predict_move()
+        elif self.movement == "down":
+            row, col = (self.y - 14) // 54, (self.x - 4) // 54
+            row_n, col_n = (self.y + 50) // 54, (self.x + 50) // 54
+            c = self.maze[row][col]
+            if not (c == 4 or c == 5 or c == 6 or c == 7 or c == 12 or c == 13 or c == 14 or c == 15):
+                if self.m_x % 54 == 0:
+                    self.y += self.speed
+                    self.m_y += self.speed
+                    self.direction = "down"
+                else:
+                    self.predict_move()
+
+    @staticmethod
+    def get_neighbors(current, c):
+        neighbors = []
+        if c >= 0 and c <= 7:
+            neighbors.append((current[0], current[1] - 1))
+        if c == 0 or c == 1 or c == 4 or c == 5 or c == 8 or c == 9 or c == 12 or c == 13:
+            neighbors.append((current[0], current[1] + 1))
+        if c == 0 or c == 2 or c == 4 or c == 6 or c == 8 or c == 10 or c == 12 or c == 14:
+            neighbors.append((current[0] - 1, current[1]))
+        if c == 0 or c == 1 or c == 2 or c == 3 or c == 8 or c == 9 or c == 10 or c == 11:
+            neighbors.append((current[0] + 1, current[1]))
+
+        return neighbors
+
+    def path_finding(self, target_cell, drawn_maze):
+        visited = {}
+        path = []
+        queue = [self.cell]
+
+        while queue:
+            current = queue.pop(0)
+            row, col = current
+            c = self.maze[row][col]
+            neighbors = self.get_neighbors(current, c)
+            for neighbor in neighbors:
+                if neighbor not in visited:
+                    queue.append(neighbor)
+                    visited[neighbor] = current
+
+        path.append(target_cell)
+        next_cell = visited[target_cell]
+        while self.cell not in path:
+            temp_cell = next_cell
+            path.append(next_cell)
+            next_cell = visited[temp_cell]
+
+        return path
+
+
+
+
+

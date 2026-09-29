@@ -54,6 +54,7 @@ def main():
     hud = HUD(screen.get_width(), screen.get_height(), spritesheet)
     start_time = pygame.time.get_ticks()
 
+    print(orange_ghost.path_finding((0, 0), drawn_maze))
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
