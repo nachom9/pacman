@@ -65,9 +65,7 @@ class HUD:
         level_label_rect.center = (self.screen_width - 95, self.screen_height - 32)    
         screen.blit(level_label, level_label_rect)
 
-    def draw_time(self, screen, start_time, level_time=90):
-        elapsed_ms = pygame.time.get_ticks() - start_time
-        elapsed_seconds = elapsed_ms // 1000
+    def draw_time(self, screen, elapsed_seconds, level_time=90):
         time_left = level_time - elapsed_seconds
 
         if time_left < 0:

@@ -7,6 +7,7 @@ from draw_maze import DrawnMaze
 from hud import HUD
 from main_menu import MainMenu
 from pause_menu import PauseMenu
+from level_time import Time
 import pygame
 
 
@@ -59,7 +60,7 @@ def main():
     map_surface = drawn_maze.draw_map()
 
     hud = HUD(screen.get_width(), screen.get_height(), spritesheet)
-    start_time = pygame.time.get_ticks()
+    time = Time()
 
     while running:
         for event in pygame.event.get():
@@ -67,9 +68,12 @@ def main():
                 running = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
+                    pause_start = pygame.time.get_ticks()
                     if pause_menu.run(screen, clock) == "quit":
                         running = False
                         break
+                    pause_duration = pygame.time.get_ticks() - pause_start
+                    time.pause(pause_duration)
 
         keys = pygame.key.get_pressed()
         pacman.move(keys, drawn_maze)
@@ -113,7 +117,7 @@ def main():
         hud.draw_score(screen, pacman.score)
         hud.draw_lives(screen, pacman.lives)
         hud.draw_level(screen, 7)
-        hud.draw_time(screen, start_time, 120)
+        hud.draw_time(screen, time.get_elapsed_time(), 120)
 
         pygame.display.flip()
         clock.tick(60)
