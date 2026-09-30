@@ -84,6 +84,27 @@ class Ghost:
             x += +50
 
         return ghosts
+
+    def set_behaviour(self, drawn_maze, pacman_cell, direction):
+        if self.color == 'orange':
+            self.move(drawn_maze, pacman_cell)
+        if self.color == 'pink':
+            if direction == "right":
+                col = min(len(self.maze[1]) - 1, pacman_cell[1] + 4)
+                row = pacman_cell[0]
+            elif direction == "down":
+                row = min(len(self.maze[0]) - 1, pacman_cell[0] + 4)
+                col = pacman_cell[0]
+            elif direction == "left":
+                col = max(0, pacman_cell[1] - 4)
+                row = pacman_cell[0]
+            elif direction == "up":
+                row = max(0, pacman_cell[0] - 4)
+                col = pacman_cell[0]
+            target_cell = (row, col)
+            self.move(drawn_maze, target_cell)
+
+
     def predict_move(self):
         if self.direction == "left":
                 self.x -= self.speed
@@ -217,7 +238,8 @@ class Ghost:
         path.reverse()
         steps.reverse()
 
-        return steps[0]
+        if steps:
+            return steps[0]
 
 
 

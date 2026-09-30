@@ -3,7 +3,6 @@ import pygame
 class Pacman:
     def __init__(self, size, maze):
         self.lives = 3
-        self.direction = 0
         self.x = (len(maze[0]) // 2 * 54) + 15
         self.y = (len(maze) // 2 * 54) + 15
         self.prev_x = (len(maze[0]) // 2 * 54) + 15
