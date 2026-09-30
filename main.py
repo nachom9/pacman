@@ -5,6 +5,7 @@ from pacman import Pacman
 from ghosts import Ghost
 from draw_maze import DrawnMaze
 from hud import HUD
+from main_menu import MainMenu
 import pygame
 
 
@@ -43,6 +44,10 @@ def main():
     )
     clock = pygame.time.Clock()
     pygame.display.set_caption("Pacman")
+    menu = MainMenu(screen.get_width(), screen.get_height())
+    if menu.run(screen, clock) == "quit":
+        pygame.quit()
+        return
     running = True
 
     pacman_sprites = pacman.get_sprites()
