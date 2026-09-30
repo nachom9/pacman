@@ -85,24 +85,90 @@ class Ghost:
 
         return ghosts
 
-    def set_behaviour(self, drawn_maze, pacman_cell, direction):
-        if self.color == 'orange':
-            self.move(drawn_maze, pacman_cell)
-        if self.color == 'pink':
+    def set_behaviour(self, drawn_maze, pacman_cell, direction, red_ghost_cell):
+
+        if self.color == 'red':
+            target_cell = pacman_cell
+
+        elif self.color == 'pink':
+            if abs((self.cell[0] - pacman_cell[0])) + abs((self.cell[1] - pacman_cell[1])) < 4:
+                target_cell = pacman_cell
+            else:
+                if direction == "right":
+                    col = min(len(self.maze[1]) - 1, pacman_cell[1] + 4)
+                    row = pacman_cell[0]
+                elif direction == "down":
+                    row = min(len(self.maze[0]) - 1, pacman_cell[0] + 4)
+                    col = pacman_cell[0]
+                elif direction == "left":
+                    col = max(0, pacman_cell[1] - 4)
+                    row = pacman_cell[0]
+                elif direction == "up":
+                    row = max(0, pacman_cell[0] - 4)
+                    col = pacman_cell[0]
+                while self.maze[row][col] == 15:
+                    row += 1
+                    col += 1
+                target_cell = (row, col)
+
+        elif self.color == 'orange':
+            if abs((self.cell[0] - pacman_cell[0])) + abs((self.cell[1] - pacman_cell[1])) < 4:
+                target_cell = pacman_cell
+            else:
+                if direction == "left":
+                    col = min(len(self.maze[1]) - 1, pacman_cell[1] + 4)
+                    row = pacman_cell[0]
+                elif direction == "up":
+                    row = min(len(self.maze[0]) - 1, pacman_cell[0] + 4)
+                    col = pacman_cell[0]
+                elif direction == "right":
+                    col = max(0, pacman_cell[1] - 4)
+                    row = pacman_cell[0]
+                elif direction == "down":
+                    row = max(0, pacman_cell[0] - 4)
+                    col = pacman_cell[0]
+                while self.maze[row][col] == 15:
+                    row += 1
+                    col += 1
+                target_cell = (row, col)
+
+        elif self.color == 'blue':
             if direction == "right":
-                col = min(len(self.maze[1]) - 1, pacman_cell[1] + 4)
-                row = pacman_cell[0]
+                v_col = min(len(self.maze[1]) - 1, pacman_cell[1] + 2)
+                v_row = pacman_cell[0]
             elif direction == "down":
-                row = min(len(self.maze[0]) - 1, pacman_cell[0] + 4)
-                col = pacman_cell[0]
+                v_row = min(len(self.maze[0]) - 1, pacman_cell[0] + 2)
+                v_col = pacman_cell[0]
             elif direction == "left":
-                col = max(0, pacman_cell[1] - 4)
-                row = pacman_cell[0]
+                v_col = max(0, pacman_cell[1] - 2)
+                v_row = pacman_cell[0]
             elif direction == "up":
-                row = max(0, pacman_cell[0] - 4)
-                col = pacman_cell[0]
+                v_row = max(0, pacman_cell[0] - 2)
+                v_col = pacman_cell[0]
+
+            row_diff = v_row - red_ghost_cell[0]
+            col_diff = v_col - red_ghost_cell[1]
+            row = v_row - row_diff * 2
+            col = v_col - col_diff * 2
+            print(row, col)
+            while row >= 15:
+                row -= 1
+            while col >= 15:
+                col -= 1
+            while row < 0:
+                row += 1
+            while col < 0:
+                col += 1
+            while self.maze[row][col] == 15:
+                row += 1
+                col += 1
+
             target_cell = (row, col)
-            self.move(drawn_maze, target_cell)
+
+
+        self.move(drawn_maze, target_cell)
+
+
 
 
     def predict_move(self):

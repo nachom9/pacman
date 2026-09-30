@@ -61,8 +61,10 @@ def main():
 
         keys = pygame.key.get_pressed()
         pacman.move(keys, drawn_maze)
-        orange_ghost.set_behaviour(drawn_maze, pacman.cell, pacman.movement)
-        pink_ghost.set_behaviour(drawn_maze, pacman.cell, pacman.movement)
+        red_ghost.set_behaviour(drawn_maze, pacman.cell, pacman.movement, (0, 0))
+        orange_ghost.set_behaviour(drawn_maze, pacman.cell, pacman.movement, (0, 0))
+        pink_ghost.set_behaviour(drawn_maze, pacman.cell, pacman.movement, (0, 0))
+        blue_ghost.set_behaviour(drawn_maze, pacman.cell, pacman.movement, red_ghost.cell)
         if abs((pacman.prev_x - pacman.x)) + abs((pacman.prev_y - pacman.y)) > 4:
             pacman.change_animation()
         pacman_surface = pygame.transform.rotate(
