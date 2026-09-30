@@ -6,6 +6,7 @@ from ghosts import Ghost
 from draw_maze import DrawnMaze
 from hud import HUD
 from main_menu import MainMenu
+from pause_menu import PauseMenu
 import pygame
 
 
@@ -48,6 +49,7 @@ def main():
     if menu.run(screen, clock) == "quit":
         pygame.quit()
         return
+    pause_menu = PauseMenu(screen.get_width(), screen.get_height())
     running = True
 
     pacman_sprites = pacman.get_sprites()
@@ -63,6 +65,11 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    if pause_menu.run(screen, clock) == "quit":
+                        running = False
+                        break
 
         keys = pygame.key.get_pressed()
         pacman.move(keys, drawn_maze)
