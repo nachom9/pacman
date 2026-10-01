@@ -1,14 +1,13 @@
 [project]
 name = "pacman"
 version = "0.1.0"
-description = "Add your description here"
+description = "This is a recreation of the old game Pac-man, works very similar to it"
 readme = "README.md"
 authors = [
     { name = "DiegoVa6", email = "94931596+DiegoVa6@users.noreply.github.com" }
 ]
 requires-python = ">=3.12"
 # Indicamos que es una aplicación ejecutable, no una librería:
-project-type = "app" 
 dependencies = [
     "mazegenerator",
     "pygame>=2.6.1",
@@ -16,3 +15,9 @@ dependencies = [
 
 [tool.uv.sources]
 mazegenerator = { path = "mazegenerator-2.1.0-py3-none-any.whl" }
+
+[dependency-groups]
+dev = [
+    "flake8>=7.4.1",
+    "mypy>=2.3.1",
+]
