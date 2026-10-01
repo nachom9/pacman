@@ -17,6 +17,7 @@ class Pacman:
         self.maze = maze
         self.direction = "left"
         self.score = 0
+        self.alive = True
 
     def get_sprites(self):
         pacman_coords = {
@@ -24,6 +25,7 @@ class Pacman:
             "down": {"rotation": 270},
             "left": {"rotation": 180},
             "up": {"rotation": 90},
+            "death": []
             }
         directions = ["right", "down", "left", "up"]
         mouths = ["closed", "opened", "full"]
@@ -42,6 +44,11 @@ class Pacman:
         pacman_coords["up"]["closed"] = [x, y, width, height]
         pacman_coords["up"]["opened"] = [x, y + 50, width, height]
         pacman_coords["up"]["full"] = [x, y + 100, width, height]
+
+        x = 352
+        for _ in range (11):
+            pacman_coords["death"].append([x, y, width, height])
+            y += 50
 
         return pacman_coords
 
@@ -144,3 +151,7 @@ class Pacman:
             self.mouth += 1
 
         self.mouth_name = mouths[self.mouth]
+
+    def death_animation(sprites):
+        pass
+

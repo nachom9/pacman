@@ -85,48 +85,51 @@ class Ghost:
 
         return ghosts
 
-    def set_behaviour(self, drawn_maze, pacman_cell, direction, red_ghost_cell):
+    def set_behaviour(self, drawn_maze, pacman, direction, red_ghost_cell):
 
+        if self.cell == pacman.cell:
+            pacman.alive = False
+            return
         if self.color == 'red':
-            target_cell = pacman_cell
+            target_cell = pacman.cell
 
         elif self.color == 'pink':
-            if abs((self.cell[0] - pacman_cell[0])) + abs((self.cell[1] - pacman_cell[1])) < 4:
-                target_cell = pacman_cell
+            if abs((self.cell[0] - pacman.cell[0])) + abs((self.cell[1] - pacman.cell[1])) < 4:
+                target_cell = pacman.cell
             else:
                 if direction == "right":
-                    col = min(len(self.maze[1]) - 1, pacman_cell[1] + 4)
-                    row = pacman_cell[0]
+                    col = min(len(self.maze[1]) - 1, pacman.cell[1] + 4)
+                    row = pacman.cell[0]
                 elif direction == "down":
-                    row = min(len(self.maze[0]) - 1, pacman_cell[0] + 4)
-                    col = pacman_cell[0]
+                    row = min(len(self.maze[0]) - 1, pacman.cell[0] + 4)
+                    col = pacman.cell[0]
                 elif direction == "left":
-                    col = max(0, pacman_cell[1] - 4)
-                    row = pacman_cell[0]
+                    col = max(0, pacman.cell[1] - 4)
+                    row = pacman.cell[0]
                 elif direction == "up":
-                    row = max(0, pacman_cell[0] - 4)
-                    col = pacman_cell[0]
+                    row = max(0, pacman.cell[0] - 4)
+                    col = pacman.cell[0]
                 while self.maze[row][col] == 15:
                     row += 1
                     col += 1
                 target_cell = (row, col)
 
         elif self.color == 'orange':
-            if abs((self.cell[0] - pacman_cell[0])) + abs((self.cell[1] - pacman_cell[1])) < 4:
-                target_cell = pacman_cell
+            if abs((self.cell[0] - pacman.cell[0])) + abs((self.cell[1] - pacman.cell[1])) < 4:
+                target_cell = pacman.cell
             else:
                 if direction == "left":
-                    col = min(len(self.maze[1]) - 1, pacman_cell[1] + 4)
-                    row = pacman_cell[0]
+                    col = min(len(self.maze[1]) - 1, pacman.cell[1] + 4)
+                    row = pacman.cell[0]
                 elif direction == "up":
-                    row = min(len(self.maze[0]) - 1, pacman_cell[0] + 4)
-                    col = pacman_cell[0]
+                    row = min(len(self.maze[0]) - 1, pacman.cell[0] + 4)
+                    col = pacman.cell[0]
                 elif direction == "right":
-                    col = max(0, pacman_cell[1] - 4)
-                    row = pacman_cell[0]
+                    col = max(0, pacman.cell[1] - 4)
+                    row = pacman.cell[0]
                 elif direction == "down":
-                    row = max(0, pacman_cell[0] - 4)
-                    col = pacman_cell[0]
+                    row = max(0, pacman.cell[0] - 4)
+                    col = pacman.cell[0]
                 while self.maze[row][col] == 15:
                     row += 1
                     col += 1
@@ -134,17 +137,17 @@ class Ghost:
 
         elif self.color == 'blue':
             if direction == "right":
-                v_col = min(len(self.maze[1]) - 1, pacman_cell[1] + 2)
-                v_row = pacman_cell[0]
+                v_col = min(len(self.maze[1]) - 1, pacman.cell[1] + 2)
+                v_row = pacman.cell[0]
             elif direction == "down":
-                v_row = min(len(self.maze[0]) - 1, pacman_cell[0] + 2)
-                v_col = pacman_cell[0]
+                v_row = min(len(self.maze[0]) - 1, pacman.cell[0] + 2)
+                v_col = pacman.cell[0]
             elif direction == "left":
-                v_col = max(0, pacman_cell[1] - 2)
-                v_row = pacman_cell[0]
+                v_col = max(0, pacman.cell[1] - 2)
+                v_row = pacman.cell[0]
             elif direction == "up":
-                v_row = max(0, pacman_cell[0] - 2)
-                v_col = pacman_cell[0]
+                v_row = max(0, pacman.cell[0] - 2)
+                v_col = pacman.cell[0]
 
             row_diff = v_row - red_ghost_cell[0]
             col_diff = v_col - red_ghost_cell[1]
