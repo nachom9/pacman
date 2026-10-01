@@ -150,10 +150,10 @@ class Ghost:
             col_diff = v_col - red_ghost_cell[1]
             row = v_row - row_diff * 2
             col = v_col - col_diff * 2
-            print(row, col)
-            while row >= 15:
+
+            while row >= len(self.maze[0]):
                 row -= 1
-            while col >= 15:
+            while col >= len(self.maze[1]):
                 col -= 1
             while row < 0:
                 row += 1
@@ -165,11 +165,7 @@ class Ghost:
 
             target_cell = (row, col)
 
-
         self.move(drawn_maze, target_cell)
-
-
-
 
     def predict_move(self):
         if self.direction == "left":
@@ -190,6 +186,8 @@ class Ghost:
                 self.movement = "down"
 
     def move(self, drawn_maze, target_cell):
+        if abs((self.prev_x - self.x)) + abs((self.prev_y - self.y)) > 4:
+            self.change_animation()
         next_step = self.path_finding(target_cell, drawn_maze)
         row, col = self.y // 54, self.x // 54
         self.cell = (row, col)
@@ -307,7 +305,11 @@ class Ghost:
         if steps:
             return steps[0]
 
+    def change_animation(self):
+        self.prev_x = self.x
+        self.prev_y = self.y
 
-
-
-
+        if self.frame == '0':
+            self.frame = '1'
+        else:
+            self.frame = '0'
