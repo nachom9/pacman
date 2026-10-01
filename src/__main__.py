@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 from mazegenerator import MazeGenerator
-from pacman import Pacman
-from ghosts import Ghost
-from draw_maze import DrawnMaze
-from hud import HUD
-from main_menu import MainMenu
-from pause_menu import PauseMenu
-from level_time import Time
+from src.pacman import Pacman
+from src.ghosts import Ghost
+from src.draw_maze import DrawnMaze
+from src.hud import HUD
+from src.main_menu import MainMenu
+from src.pause_menu import PauseMenu
+from src.level_time import Time
 import pygame
 
 

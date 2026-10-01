@@ -1,6 +1,6 @@
 import pygame
 
-from instructions_menu import InstructionsMenu
+from src.instructions_menu import InstructionsMenu
 
 FONT_PATH = "assets/fonts/PressStart2P-Regular.ttf"
 WHITE = (255, 255, 255)

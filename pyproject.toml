@@ -1,0 +1,18 @@
+[project]
+name = "pacman"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "DiegoVa6", email = "94931596+DiegoVa6@users.noreply.github.com" }
+]
+requires-python = ">=3.12"
+# Indicamos que es una aplicación ejecutable, no una librería:
+project-type = "app" 
+dependencies = [
+    "mazegenerator",
+    "pygame>=2.6.1",
+]
+
+[tool.uv.sources]
+mazegenerator = { path = "mazegenerator-2.1.0-py3-none-any.whl" }
