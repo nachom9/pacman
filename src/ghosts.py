@@ -3,6 +3,7 @@ import pygame
 class Ghost:
     def __init__(self, size, maze, color):
         if color == "red":
+            self.starting_cell = (0, 0)
             self.x = 15
             self.y = 15
             self.prev_x = 15
@@ -11,6 +12,7 @@ class Ghost:
             self.movement = "right"
             self.cell = (0, 0)
         elif color == "pink":
+            self.starting_cell = (size[0] - 1, 0)
             self.x = (size[0] - 1) * 54 + 15
             self.y = 15
             self.prev_x = (size[0] - 1) * 54 + 15
@@ -19,6 +21,7 @@ class Ghost:
             self.movement = "left"
             self.cell = (size[0] - 1, 0)
         elif color == "blue":
+            self.starting_cell = (0, size[1] - 1)
             self.x = 15
             self.y = (size[1] - 1) * 54 + 15
             self.prev_x = 15
@@ -27,6 +30,7 @@ class Ghost:
             self.movement = "right"
             self.cell = (0, size[1] - 1)
         elif color == "orange":
+            self.starting_cell = (size[0] - 1, size[1] - 1)
             self.x = (size[0] - 1) * 54 + 15
             self.y = (size[1] - 1) * 54 + 15
             self.prev_x = (size[0] - 1) * 54 + 15
@@ -42,6 +46,8 @@ class Ghost:
         self.frame = '0'
         self.maze = maze
         self.rect = pygame.Rect(self.x, self.y, 34, 33)
+        self.sprites = []
+        self.fleeing = "blue"
 
     @staticmethod
     def get_sprites():
@@ -69,6 +75,10 @@ class Ghost:
                 "down": {},
                 "left": {},
                 "up": {}
+            },
+            "fleeing": {
+                "blue": {},
+                "grey": {},
             }
         }
 
@@ -78,42 +88,55 @@ class Ghost:
         width, height = 35, 35
 
         for ghost in ghosts.keys():
-            for direction in directions:
-                for frame in frames:
-                    ghosts[ghost][direction][frame] = [x, y, width, height]
-                    y += 50
-            y = 4
-            x += +50
-
+            if ghost == "fleeing":
+                x = 1
+                y = 554
+                ghosts[ghost]['blue']['0'] = [x, y, width, height]
+                y += 50
+                ghosts[ghost]['blue']['1'] = [x, y, width, height]
+                x += 50
+                y -= 50
+                ghosts[ghost]['grey']['0'] = [x, y, width, height]
+                y += 50
+                ghosts[ghost]['grey']['1'] = [x, y, width, height]
+            else:
+                for direction in directions:
+                    for frame in frames:
+                        ghosts[ghost][direction][frame] = [x, y, width, height]
+                        y += 50
+                y = 4
+                x += +50
+        print(ghosts)
         return ghosts
 
-    def set_behaviour(self, drawn_maze, pacman, direction, red_ghost_cell):
+    def set_behaviour(self, pacman, direction, red_ghost_cell):
 
+        if pacman.brave:
+            self.flee()
+            return
+        self.speed = 2
         if pacman.rect.colliderect(self.rect):
             pacman.state = "dying"
         if self.color == 'red':
             target_cell = pacman.cell
 
         elif self.color == 'pink':
-            if abs((self.cell[0] - pacman.cell[0])) + abs((self.cell[1] - pacman.cell[1])) < 4:
-                target_cell = pacman.cell
-            else:
-                if direction == "right":
-                    col = min(len(self.maze[1]) - 1, pacman.cell[1] + 4)
-                    row = pacman.cell[0]
-                elif direction == "down":
-                    row = min(len(self.maze[0]) - 1, pacman.cell[0] + 4)
-                    col = pacman.cell[0]
-                elif direction == "left":
-                    col = max(0, pacman.cell[1] - 4)
-                    row = pacman.cell[0]
-                elif direction == "up":
-                    row = max(0, pacman.cell[0] - 4)
-                    col = pacman.cell[0]
-                while self.maze[row][col] == 15:
-                    row += 1
-                    col += 1
-                target_cell = (row, col)
+            if direction == "right":
+                col = min(len(self.maze[1]) - 1, pacman.cell[1] + 4)
+                row = pacman.cell[0]
+            elif direction == "down":
+                row = min(len(self.maze[0]) - 1, pacman.cell[0] + 4)
+                col = pacman.cell[0]
+            elif direction == "left":
+                col = max(0, pacman.cell[1] - 4)
+                row = pacman.cell[0]
+            elif direction == "up":
+                row = max(0, pacman.cell[0] - 4)
+                col = pacman.cell[0]
+            while self.maze[row][col] == 15:
+                row += 1
+                col += 1
+            target_cell = (row, col)
 
         elif self.color == 'orange':
             if abs((self.cell[0] - pacman.cell[0])) + abs((self.cell[1] - pacman.cell[1])) < 4:
@@ -169,7 +192,7 @@ class Ghost:
 
             target_cell = (row, col)
 
-        self.move(drawn_maze, target_cell)
+        self.move(target_cell)
 
     def predict_move(self):
         if self.direction == "left":
@@ -189,10 +212,10 @@ class Ghost:
                 self.m_y += self.speed
                 self.movement = "down"
 
-    def move(self, drawn_maze, target_cell):
+    def move(self, target_cell):
         if abs((self.prev_x - self.x)) + abs((self.prev_y - self.y)) > 4:
             self.change_animation()
-        next_step = self.path_finding(target_cell, drawn_maze)
+        next_step = self.path_finding(target_cell)
         row, col = self.y // 54, self.x // 54
         self.cell = (row, col)
         c = self.maze[row][col]
@@ -278,7 +301,7 @@ class Ghost:
 
         return neighbors
 
-    def path_finding(self, target_cell, drawn_maze):
+    def path_finding(self, target_cell):
         visited = {}
         path = []
         steps = []
@@ -319,3 +342,80 @@ class Ghost:
             self.frame = '1'
         else:
             self.frame = '0'
+
+    def flee(self):
+        self.speed = 1
+        self.flee_move(self.starting_cell)
+
+    def flee_move(self, target_cell):
+        next_step = self.path_finding(target_cell)
+        row, col = self.y // 54, self.x // 54
+        self.cell = (row, col)
+        c = self.maze[row][col]
+        if next_step == "left":
+            self.movement = "left"
+            if self.m_y % 54 != 0:
+                self.predict_move()
+                return
+        if next_step == "right":
+            self.movement = "right"
+            if self.m_y % 54 != 0:
+                self.predict_move()
+                return
+        if next_step == "up":
+            self.movement = "up"
+            if self.m_x % 54 != 0:
+                self.predict_move()
+                return
+        if next_step == "down":
+            self.movement = "down"
+            if self.m_x % 54 != 0:
+                self.predict_move()
+                return
+
+        if self.movement == "left":
+            row, col = (self.y - 4) // 54, (self.x + 38) // 54
+            row_n, col_n = (self.y + 50) // 54, (self.x + 77) // 54
+            c = self.maze[row][col]
+            if not (c == 8 or c == 9 or c == 10 or c == 11 or c == 12 or c == 13 or c == 14 or c == 15):
+                if self.m_y % 54 == 0:
+                    self.x -= self.speed
+                    self.m_x -= self.speed
+                    self.direction = "left"
+                else:
+                    self.predict_move()
+        elif self.movement == "right":
+            row, col = (self.y - 4) // 54, (self.x - 14) // 54
+            row_n, col_n = (self.y + 50) // 54, (self.x + 50) // 54
+            c = self.maze[row][col]
+            if not (c == 2 or c == 3 or c == 6 or c == 7 or c == 10 or c == 11 or c == 14 or c == 15):
+                if self.m_y % 54 == 0:
+                    self.x += self.speed
+                    self.m_x += self.speed
+                    self.direction = "right"
+                else:
+                    self.predict_move()
+        elif self.movement == "up":
+            row, col = (self.y + 37) // 54, (self.x - 4) // 54
+            row_n, col_n = (self.y + 77) // 54, (self.x + 50) // 54
+            c = self.maze[row][col]
+            if not (c == 1 or c == 3 or c == 5 or c == 7 or c == 9 or c == 11 or c == 13 or c == 15):
+                if self.m_x % 54 == 0:
+                    self.y -= self.speed
+                    self.m_y -= self.speed
+                    self.direction = "up"
+                else:
+                    self.predict_move()
+        elif self.movement == "down":
+            row, col = (self.y - 14) // 54, (self.x - 4) // 54
+            row_n, col_n = (self.y + 50) // 54, (self.x + 50) // 54
+            c = self.maze[row][col]
+            if not (c == 4 or c == 5 or c == 6 or c == 7 or c == 12 or c == 13 or c == 14 or c == 15):
+                if self.m_x % 54 == 0:
+                    self.y += self.speed
+                    self.m_y += self.speed
+                    self.direction = "down"
+                else:
+                    self.predict_move()
+        self.rect.x = self.x
+        self.rect.y = self.y

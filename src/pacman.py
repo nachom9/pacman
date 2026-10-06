@@ -20,6 +20,8 @@ class Pacman:
         self.state = "playing"
         self.rect = pygame.Rect(self.x, self.y, 34, 33)
         self.death_timer = 0
+        self.brave = False
+        self.sprites = []
 
     def get_sprites(self):
         pacman_coords = {
@@ -101,6 +103,7 @@ class Pacman:
                             (self.cell[0] == len(self.maze[0]) - 1 and self.cell[1] == 0) or
                             (self.cell[0] == len(self.maze[0]) - 1 and self.cell[1] == len(self.maze[1]) - 1)):
                             self.score += 50
+                            self.brave = True
                         else:
                             self.score += 10
                         drawn_maze.cells_gums[(row_n, col_n)] = False
@@ -121,6 +124,7 @@ class Pacman:
                             (self.cell[0] == len(self.maze[0]) - 1 and self.cell[1] == 0) or
                             (self.cell[0] == len(self.maze[0]) - 1 and self.cell[1] == len(self.maze[1]) - 1)):
                             self.score += 50
+                            self.brave = True
                         else:
                             self.score += 10
                         drawn_maze.cells_gums[(row_n, col_n)] = False
@@ -141,6 +145,7 @@ class Pacman:
                             (self.cell[0] == len(self.maze[0]) - 1 and self.cell[1] == 0) or
                             (self.cell[0] == len(self.maze[0]) - 1 and self.cell[1] == len(self.maze[1]) - 1)):
                             self.score += 50
+                            self.brave = True
                         else:
                             self.score += 10
                         drawn_maze.cells_gums[(row_n, col_n)] = False
@@ -161,6 +166,7 @@ class Pacman:
                             (self.cell[0] == len(self.maze[0]) - 1 and self.cell[1] == 0) or
                             (self.cell[0] == len(self.maze[0]) - 1 and self.cell[1] == len(self.maze[1]) - 1)):
                             self.score += 50
+                            self.brave = True
                         else:
                             self.score += 10
                         drawn_maze.cells_gums[(row_n, col_n)] = False

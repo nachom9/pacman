@@ -55,8 +55,9 @@ def main():
     pause_menu = PauseMenu(screen.get_width(), screen.get_height())
     running = True
 
-    pacman_sprites = pacman.get_sprites()
-    ghosts_sprites = Ghost.get_sprites()
+    pacman.sprites = pacman.get_sprites()
+    for ghost in ghosts:
+        ghost.sprites = ghost.get_sprites()
     spritesheet = pygame.image.load("assets/sprites.png").convert_alpha()
 
     map_surface = drawn_maze.draw_map()
@@ -81,16 +82,19 @@ def main():
             keys = pygame.key.get_pressed()
             pacman.move(keys, drawn_maze)
             for ghost in ghosts:
-                ghost.set_behaviour(drawn_maze, pacman, pacman.movement, ghosts[0].cell)
-                ghost.surface = spritesheet.subsurface(pygame.Rect(ghosts_sprites[ghost.color][ghost.direction][ghost.frame]))
+                ghost.set_behaviour(pacman, pacman.movement, ghosts[0].cell)
+                if not pacman.brave:
+                    ghost.surface = spritesheet.subsurface(pygame.Rect(ghost.sprites[ghost.color][ghost.direction][ghost.frame]))
+                else:
+                    ghost.surface = spritesheet.subsurface(pygame.Rect(ghost.sprites[ghost.fleeing][ghost.frame]))
             if abs((pacman.prev_x - pacman.x)) + abs((pacman.prev_y - pacman.y)) > 4:
                 pacman.change_animation()
             pacman_surface = pygame.transform.rotate(
-                spritesheet.subsurface(pygame.Rect(pacman_sprites[pacman.direction][pacman.mouth_name])),
-                pacman_sprites[pacman.direction]["rotation"])
+                spritesheet.subsurface(pygame.Rect(pacman.sprites[pacman.direction][pacman.mouth_name])),
+                pacman.sprites[pacman.direction]["rotation"])
 
         elif pacman.state == "dying":
-            death_frame = pacman.death_animation(pacman_sprites['death'], clock)
+            death_frame = pacman.death_animation(pacman.sprites['death'], clock)
             pacman_surface = spritesheet.subsurface(pygame.Rect(death_frame))
         elif pacman.state == "death":
             pacman.reset_round(ghosts, maze)
