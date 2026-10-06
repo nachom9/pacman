@@ -29,10 +29,12 @@ def main():
     )
 
     pacman = Pacman(size, maze)
-    red_ghost = Ghost(size, maze, "red")
-    pink_ghost = Ghost(size, maze, "pink")
-    blue_ghost = Ghost(size, maze, "blue")
-    orange_ghost = Ghost(size, maze, "orange")
+    ghosts = [
+        Ghost(size, maze, "red"),
+        Ghost(size, maze, "pink"),
+        Ghost(size, maze, "blue"),
+        Ghost(size, maze, "orange")
+    ]
 
     pygame.init()
     maze_width = size[0] * 54 + 10
@@ -54,7 +56,7 @@ def main():
     running = True
 
     pacman_sprites = pacman.get_sprites()
-    ghosts_sprites = red_ghost.get_sprites()
+    ghosts_sprites = Ghost.get_sprites()
     spritesheet = pygame.image.load("assets/sprites.png").convert_alpha()
 
     map_surface = drawn_maze.draw_map()
@@ -75,44 +77,35 @@ def main():
                     pause_duration = pygame.time.get_ticks() - pause_start
                     time.pause(pause_duration)
 
-        keys = pygame.key.get_pressed()
-        pacman.move(keys, drawn_maze)
-        red_ghost.set_behaviour(drawn_maze, pacman, pacman.movement, (0, 0))
-        orange_ghost.set_behaviour(drawn_maze, pacman, pacman.movement, (0, 0))
-        pink_ghost.set_behaviour(drawn_maze, pacman, pacman.movement, (0, 0))
-        blue_ghost.set_behaviour(drawn_maze, pacman, pacman.movement, red_ghost.cell)
-        if abs((pacman.prev_x - pacman.x)) + abs((pacman.prev_y - pacman.y)) > 4:
-            pacman.change_animation()
-        pacman_surface = pygame.transform.rotate(
-            spritesheet.subsurface(pygame.Rect(pacman_sprites[pacman.direction][pacman.mouth_name])),
-            pacman_sprites[pacman.direction]["rotation"])
-        red_ghost_surface = spritesheet.subsurface(pygame.Rect(ghosts_sprites[red_ghost.color][red_ghost.direction][red_ghost.frame]))
-        pink_ghost_surface = spritesheet.subsurface(pygame.Rect(ghosts_sprites[pink_ghost.color][pink_ghost.direction][pink_ghost.frame]))
-        blue_ghost_surface = spritesheet.subsurface(pygame.Rect(ghosts_sprites[blue_ghost.color][blue_ghost.direction][blue_ghost.frame]))
-        orange_ghost_surface = spritesheet.subsurface(pygame.Rect(ghosts_sprites[orange_ghost.color][orange_ghost.direction][orange_ghost.frame]))
+        if pacman.state == "playing":
+            keys = pygame.key.get_pressed()
+            pacman.move(keys, drawn_maze)
+            for ghost in ghosts:
+                ghost.set_behaviour(drawn_maze, pacman, pacman.movement, ghosts[0].cell)
+                ghost.surface = spritesheet.subsurface(pygame.Rect(ghosts_sprites[ghost.color][ghost.direction][ghost.frame]))
+            if abs((pacman.prev_x - pacman.x)) + abs((pacman.prev_y - pacman.y)) > 4:
+                pacman.change_animation()
+            pacman_surface = pygame.transform.rotate(
+                spritesheet.subsurface(pygame.Rect(pacman_sprites[pacman.direction][pacman.mouth_name])),
+                pacman_sprites[pacman.direction]["rotation"])
+
+        elif pacman.state == "dying":
+            death_frame = pacman.death_animation(pacman_sprites['death'], clock)
+            pacman_surface = spritesheet.subsurface(pygame.Rect(death_frame))
+        elif pacman.state == "death":
+            pacman.reset_round(ghosts, maze)
 
         screen.fill((0, 0, 0))
-
 
         screen.blit(map_surface, (0, top_space))
         pacgums_surface = drawn_maze.draw_pacgums()
         screen.blit(pacgums_surface, (0, top_space))
-        screen.blit(
-            red_ghost_surface,
-            (red_ghost.x, red_ghost.y + top_space)
-        )
-        screen.blit(
-            pink_ghost_surface,
-            (pink_ghost.x, pink_ghost.y + top_space)
-        )
-        screen.blit(
-            blue_ghost_surface,
-            (blue_ghost.x, blue_ghost.y + top_space)
-        )
-        screen.blit(
-            orange_ghost_surface,
-            (orange_ghost.x, orange_ghost.y + top_space)
-        )
+        for ghost in ghosts:
+            screen.blit(
+                ghost.surface,
+                (ghost.x, ghost.y + top_space)
+            )
+
         screen.blit(
             pacman_surface,
             (pacman.x, pacman.y + top_space)

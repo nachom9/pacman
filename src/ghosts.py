@@ -41,8 +41,10 @@ class Ghost:
         self.speed = 2
         self.frame = '0'
         self.maze = maze
+        self.rect = pygame.Rect(self.x, self.y, 34, 33)
 
-    def get_sprites(self):
+    @staticmethod
+    def get_sprites():
         ghosts = {
             "red": {
                 "right": {},
@@ -87,9 +89,8 @@ class Ghost:
 
     def set_behaviour(self, drawn_maze, pacman, direction, red_ghost_cell):
 
-        if self.cell == pacman.cell:
-            pacman.alive = False
-            return
+        if pacman.rect.colliderect(self.rect):
+            pacman.state = "dying"
         if self.color == 'red':
             target_cell = pacman.cell
 
@@ -260,6 +261,8 @@ class Ghost:
                     self.direction = "down"
                 else:
                     self.predict_move()
+        self.rect.x = self.x
+        self.rect.y = self.y
 
     @staticmethod
     def get_neighbors(current, c):
