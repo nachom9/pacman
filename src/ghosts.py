@@ -119,6 +119,17 @@ class Ghost:
             return
         else:
             self.speed = 2
+            print(
+                self.color,
+                "RETURN NORMAL:",
+                self.x,
+                self.y,
+                "MOD:",
+                (self.x - 15) % 54,
+                (self.y - 15) % 54,
+                "CELL:",
+                self.cell
+            )
         #if pacman.rect.colliderect(self.rect):
         #    pacman.state = "dying"
         if self.color == 'red':
@@ -232,13 +243,16 @@ class Ghost:
         elif self.direction == "down":
                 self.y += self.speed
                 self.movement = "down"
+        self.rect.x = self.x
+        self.rect.y = self.y
 
     def move(self, target_cell):
         if abs((self.prev_x - self.x)) + abs((self.prev_y - self.y)) > 4:
             self.change_animation()
-        next_step = self.path_finding(target_cell)
+
         row, col = self.y // 54, self.x // 54
         self.cell = (row, col)
+        next_step = self.path_finding(target_cell)
 
         if next_step == "left":
             self.movement = "left"
@@ -272,7 +286,6 @@ class Ghost:
         elif (self.movement == "right" and
             not self.check_wall_collision(self.movement)):
             if (self.y - 15) % 54 == 0:
-                row_n, col_n = (self.y + 50) // 54, (self.x + 50) // 54
                 self.x += self.speed
                 self.direction = "right"
             else:
@@ -281,7 +294,6 @@ class Ghost:
         elif (self.movement == "up" and
             not self.check_wall_collision(self.movement)):
             if (self.x - 15) % 54 == 0:
-                row_n, col_n = (self.y + 77) // 54, (self.x + 50) // 54
                 self.y -= self.speed
                 self.direction = "up"
             else:
@@ -290,7 +302,6 @@ class Ghost:
         elif (self.movement == "down" and
             not self.check_wall_collision(self.movement)):
             if (self.x - 15) % 54 == 0:
-                row_n, col_n = (self.y + 50) // 54, (self.x + 50) // 54
                 self.y += self.speed
                 self.direction = "down"
             else:
@@ -331,6 +342,8 @@ class Ghost:
         return neighbors
 
     def path_finding(self, target_cell):
+        if self.cell == target_cell:
+            return None
         visited = {self.cell: None}
         queue = [self.cell]
 
@@ -349,6 +362,8 @@ class Ghost:
                     queue.append(neighbor)
                     visited[neighbor] = [current, step]
 
+        if target_cell not in visited:
+            return None
 
         path = []
         steps = []
@@ -361,7 +376,6 @@ class Ghost:
             current = previous
 
         path.append(self.cell)
-
         path.reverse()
         steps.reverse()
 
@@ -369,6 +383,7 @@ class Ghost:
             return steps[0]
 
         return None
+
 
     def change_animation(self):
         self.prev_x = self.x
@@ -384,26 +399,45 @@ class Ghost:
         self.move(self.starting_cell)
         self.flee_timer += clock
         if 3750 <= self.flee_timer < 4000:
-            self.fleeing == "grey"
+            self.fleeing = "grey"
         if 4000 <= self.flee_timer < 4250:
-            self.fleeing == "blue"
+            self.fleeing = "blue"
         if 4250 <= self.flee_timer < 4500:
-            self.fleeing == "grey"
+            self.fleeing = "grey"
         if 4500 <= self.flee_timer < 4750:
-            self.fleeing == "grey"
+            self.fleeing = "grey"
         if 4750 <= self.flee_timer < 5000:
-            self.fleeing == "blue"
+            self.fleeing = "blue"
         if 5000 <= self.flee_timer < 5250:
-            self.fleeing == "grey"
+            self.fleeing = "grey"
         if 5250 <= self.flee_timer < 5500:
-            self.fleeing == "blue"
+            self.fleeing = "blue"
         if 5500 <= self.flee_timer < 5750:
-            self.fleeing == "grey"
+            self.fleeing = "grey"
         if 5750 <= self.flee_timer < 6000:
-            self.fleeing == "blue"
+            self.fleeing = "blue"
         if self.flee_timer >= 6000:
+            self.fix_coords()
             self.flee_timer = 0
             pacman.brave_reset += 1
+
+    def fix_coords(self):
+        if self.x % 2 == 0:
+            if self.x < 771:
+                self.x += 1
+            else:
+                self.x -= 1
+
+        if self.y % 2 == 0:
+            if self.y < 771:
+                self.y += 1
+            else:
+                self.y -= 1
+
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+
 
     def flee_move(self, target_cell):
 
