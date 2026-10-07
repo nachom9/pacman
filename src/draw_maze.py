@@ -74,7 +74,13 @@ class DrawnMaze:
         for row in self.cells:
             for col in row:
                 row_n, col_n = (y + 31) // 54, (x + 31) // 54
-                if col != 15 and not (self.cells_gums[(row_n, col_n)] == False):
+                if (((x == 31 and y == 31) or (x == 31 and y == self.size[1] * 54 + 31 - 54) or
+                   (y == 31 and x == self.size[0] * 54 + 31 - 54) or
+                   (x == self.size[0] * 54 + 31 - 54 and y == self.size[1] * 54 + 31 - 54)) and
+                   (self.cells_gums[(row_n, col_n)])):
+                   pygame.draw.circle(pacgums_surface, (222, 161, 133), (x, y), 10)
+                   self.win_check = False
+                elif col != 15 and (self.cells_gums[(row_n, col_n)]):
                     pygame.draw.circle(pacgums_surface, (222, 161, 133), (x, y), 4)
                     self.win_check = False
                 x += 54
