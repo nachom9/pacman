@@ -28,12 +28,12 @@ def main():
         cells=maze
     )
 
-    pacman = Pacman(size, maze)
+    pacman = Pacman(size, maze, drawn_maze.walls)
     ghosts = [
-        Ghost(size, maze, "red"),
-        Ghost(size, maze, "pink"),
-        Ghost(size, maze, "blue"),
-        Ghost(size, maze, "orange")
+        Ghost(size, maze, "red", drawn_maze.walls),
+        Ghost(size, maze, "pink", drawn_maze.walls),
+        Ghost(size, maze, "blue", drawn_maze.walls),
+        Ghost(size, maze, "orange", drawn_maze.walls)
     ]
 
     pygame.init()
@@ -64,6 +64,7 @@ def main():
 
     hud = HUD(screen.get_width(), screen.get_height(), spritesheet)
     time = Time()
+    timer = clock.tick(60)
 
     while running:
         for event in pygame.event.get():
@@ -72,7 +73,7 @@ def main():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     pause_start = pygame.time.get_ticks()
-                    if pause_menu.run(screen, clock) == "quit":
+                    if pause_menu.run(screen, timer) == "quit":
                         running = False
                         break
                     pause_duration = pygame.time.get_ticks() - pause_start
@@ -82,11 +83,11 @@ def main():
             keys = pygame.key.get_pressed()
             pacman.move(keys, drawn_maze)
             for ghost in ghosts:
-                ghost.set_behaviour(pacman, pacman.movement, ghosts[0].cell)
+                ghost.set_behaviour(pacman, pacman.movement, ghosts[0].cell, timer)
                 if not pacman.brave:
                     ghost.surface = spritesheet.subsurface(pygame.Rect(ghost.sprites[ghost.color][ghost.direction][ghost.frame]))
                 else:
-                    ghost.surface = spritesheet.subsurface(pygame.Rect(ghost.sprites[ghost.fleeing][ghost.frame]))
+                    ghost.surface = spritesheet.subsurface(pygame.Rect(ghost.sprites['fleeing'][ghost.fleeing][ghost.frame]))
             if abs((pacman.prev_x - pacman.x)) + abs((pacman.prev_y - pacman.y)) > 4:
                 pacman.change_animation()
             pacman_surface = pygame.transform.rotate(
@@ -94,7 +95,7 @@ def main():
                 pacman.sprites[pacman.direction]["rotation"])
 
         elif pacman.state == "dying":
-            death_frame = pacman.death_animation(pacman.sprites['death'], clock)
+            death_frame = pacman.death_animation(pacman.sprites['death'], timer)
             pacman_surface = spritesheet.subsurface(pygame.Rect(death_frame))
         elif pacman.state == "death":
             pacman.reset_round(ghosts, maze)
@@ -121,7 +122,7 @@ def main():
         hud.draw_time(screen, time.get_elapsed_time(), 120)
 
         pygame.display.flip()
-        clock.tick(60)
+        timer = clock.tick(60)
 
     pygame.quit()
 
