@@ -57,11 +57,15 @@ def main():
             first = False
         else:
             seed = 0
-
-        level = Level(
-                screen, clock, spritesheet, hud, pause_menu,
-                level_config, index + 1, seed, config.level_max_time,
-            )
+        try:
+            level = Level(
+                    screen, clock, spritesheet, hud, pause_menu,
+                    level_config, index + 1, seed, config.level_max_time,
+                )
+        except LevelError as e:
+            print(f"Error: {e}", file=sys.stderr)
+            pygame.quit()
+            sys.exit(1)
         if level.run() == "quit":
             break
 
