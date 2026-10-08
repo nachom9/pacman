@@ -130,8 +130,8 @@ class Ghost:
                 "CELL:",
                 self.cell
             )
-        #if pacman.rect.colliderect(self.rect):
-        #    pacman.state = "dying"
+        if pacman.rect.colliderect(self.rect):
+            pacman.state = "dying"
         if self.color == 'red':
             target_cell = pacman.cell
 
