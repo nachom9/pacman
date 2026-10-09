@@ -15,6 +15,7 @@ class Pacman:
         self.mouth = 0
         self.mouth_name = "opened"
         self.cell = (size[0] // 2, size[1] // 2)
+        self.starting_cell = self.cell
         self.maze = maze
         self.direction = "left"
         self.score = 0

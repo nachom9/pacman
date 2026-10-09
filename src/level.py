@@ -130,10 +130,12 @@ class Level:
                                         ghosts[0].cell,
                                         timer)
                     sprite = self.ghosts_sprites[ghost.color][ghost.direction][ghost.frame]
-                    if not pacman.brave:
+                    if ghost.mode == 'chase':
                         ghost.surface = self.spritesheet.subsurface(pygame.Rect(sprite))
-                    else:
+                    elif ghost.mode == 'flee':
                         ghost.surface = self.spritesheet.subsurface(pygame.Rect(self.ghosts_sprites['fleeing'][ghost.fleeing][ghost.frame]))
+                    elif ghost.mode == 'eaten':
+                        ghost.surface = self.spritesheet.subsurface(pygame.Rect(self.ghosts_sprites['eaten'][ghost.direction]))
                 moved = (abs(pacman.prev_x - pacman.x)
                          + abs(pacman.prev_y - pacman.y))
                 if moved > 4:
