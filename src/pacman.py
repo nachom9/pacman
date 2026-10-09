@@ -94,12 +94,15 @@ class Pacman:
     @staticmethod
     def reset_ghosts(ghosts):
         for ghost in ghosts:
+            ghost.mode = 'flee'
             ghost.flee_timer = 0
 
     def move(self, keys, drawn_maze, ghosts):
         if self.brave_reset == 4:
             self.brave_reset = 0
             self.brave = False
+            for ghost in ghosts:
+                ghost.mode = "chase"
         row_n, col_n = (self.y + 50) // 54, (self.x + 50) // 54
         margin = 15
         row, col = self.y // 54, self.x // 54

@@ -48,6 +48,7 @@ class Ghost:
         self.maze = maze
         self.rect = pygame.Rect(self.x, self.y, 34, 33)
         self.sprites = []
+        self.mode = 'chase'
         self.fleeing = "blue"
         self.flee_timer = 0
         self.walls = walls
@@ -114,7 +115,12 @@ class Ghost:
     def set_behaviour(self, pacman, direction, red_ghost_cell, clock):
         if not pacman.movement:
             return
-        if pacman.brave:
+        if self.mode == 'flee':
+            #if pacman.rect.colliderect(self.rect):
+            #    self.eaten_flee(clock, pacman)
+            #    self.flee_timer = 0
+            #    pacman.brave_reset += 1
+            #else:
             self.flee(clock, pacman)
             return
         else:
@@ -373,7 +379,6 @@ class Ghost:
 
         return None
 
-
     def change_animation(self):
         self.prev_x = self.x
         self.prev_y = self.y
@@ -382,6 +387,9 @@ class Ghost:
             self.frame = '1'
         else:
             self.frame = '0'
+
+    def eaten_flee(self, clock, pacman):
+        self.speed = 6
 
     def flee(self, clock, pacman):
         self.speed = 1
