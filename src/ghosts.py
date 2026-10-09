@@ -1,43 +1,46 @@
 import pygame
 
+CELL_SIZE = 54
+CENTER_OFFSET = 15
+
 class Ghost:
     def __init__(self, size, maze, color, walls):
         if color == "red":
             self.starting_cell = (0, 0)
-            self.x = 15
-            self.y = 15
-            self.prev_x = 15
-            self.prev_y = 15
+            self.x = CENTER_OFFSET
+            self.y = CENTER_OFFSET
+            self.prev_x = CENTER_OFFSET
+            self.prev_y = CENTER_OFFSET
             self.direction = "right"
             self.movement = "right"
             self.cell = (0, 0)
 
         elif color == "pink":
             self.starting_cell = (0, size[0] - 1)
-            self.x = (size[0] - 1) * 54 + 15
-            self.y = 15
-            self.prev_x = (size[0] - 1) * 54 + 15
-            self.prev_y = 15
+            self.x = (size[0] - 1) * CELL_SIZE + CENTER_OFFSET
+            self.y = CENTER_OFFSET
+            self.prev_x = (size[0] - 1) * CELL_SIZE + CENTER_OFFSET
+            self.prev_y = CENTER_OFFSET
             self.direction = "left"
             self.movement = "left"
             self.cell = (0, size[0] - 1)
 
         elif color == "blue":
             self.starting_cell = (size[1] - 1, 0)
-            self.x = 15
-            self.y = (size[1] - 1) * 54 + 15
-            self.prev_x = 15
-            self.prev_y = (size[1] - 1) * 54 + 15
+            self.x = CENTER_OFFSET
+            self.y = (size[1] - 1) * CELL_SIZE + CENTER_OFFSET
+            self.prev_x = CENTER_OFFSET
+            self.prev_y = (size[1] - 1) * CELL_SIZE + CENTER_OFFSET
             self.direction = "right"
             self.movement = "right"
             self.cell = (size[1] - 1, 0)
 
         elif color == "orange":
             self.starting_cell = (size[1] - 1, size[0] - 1)
-            self.x = (size[0] - 1) * 54 + 15
-            self.y = (size[1] - 1) * 54 + 15
-            self.prev_x = (size[0] - 1) * 54 + 15
-            self.prev_y = (size[1] - 1) * 54 + 15
+            self.x = (size[0] - 1) * CELL_SIZE + CENTER_OFFSET
+            self.y = (size[1] - 1) * CELL_SIZE + CENTER_OFFSET
+            self.prev_x = (size[0] - 1) * CELL_SIZE + CENTER_OFFSET
+            self.prev_y = (size[1] - 1) * CELL_SIZE + CENTER_OFFSET
             self.direction = "left"
             self.movement = "left"
             self.cell = (size[1] - 1, size[0] - 1)
@@ -143,7 +146,7 @@ class Ghost:
             elif direction == "up":
                 row = max(0, pacman.cell[0] - 4)
                 col = pacman.cell[1]
-            while self.maze[row][col] == 15:
+            while self.maze[row][col] == CENTER_OFFSET:
                 row += 1
                 col += 1
             target_cell = (row, col)
@@ -164,7 +167,7 @@ class Ghost:
                 elif direction == "down":
                     row = max(0, pacman.cell[0] - 4)
                     col = pacman.cell[1]
-                while self.maze[row][col] == 15:
+                while self.maze[row][col] == CENTER_OFFSET:
                     row += 1
                     col += 1
                 target_cell = (row, col)
@@ -196,7 +199,7 @@ class Ghost:
                 row += 1
             while col < 0:
                 col += 1
-            while self.maze[row][col] == 15:
+            while self.maze[row][col] == CENTER_OFFSET:
                 row += 1
                 col += 1
 
@@ -245,34 +248,34 @@ class Ghost:
         if abs((self.prev_x - self.x)) + abs((self.prev_y - self.y)) > 4:
             self.change_animation()
 
-        row, col = self.y // 54, self.x // 54
+        row, col = self.y // CELL_SIZE, self.x // CELL_SIZE
         self.cell = (row, col)
         next_step = self.path_finding(target_cell)
 
         if next_step == "left":
             self.movement = "left"
-            if (self.y - 15) % 54 != 0:
+            if (self.y - CENTER_OFFSET) % CELL_SIZE != 0:
                 self.predict_move()
                 return
         if next_step == "right":
             self.movement = "right"
-            if (self.y - 15) % 54 != 0:
+            if (self.y - CENTER_OFFSET) % CELL_SIZE != 0:
                 self.predict_move()
                 return
         if next_step == "up":
             self.movement = "up"
-            if (self.x - 15) % 54 != 0:
+            if (self.x - CENTER_OFFSET) % CELL_SIZE != 0:
                 self.predict_move()
                 return
         if next_step == "down":
             self.movement = "down"
-            if (self.x - 15) % 54 != 0:
+            if (self.x - CENTER_OFFSET) % CELL_SIZE != 0:
                 self.predict_move()
                 return
 
         if (self.movement == "left" and
                 not self.check_wall_collision(self.movement)):
-            if (self.y - 15) % 54 == 0:
+            if (self.y - CENTER_OFFSET) % CELL_SIZE == 0:
                 self.x -= self.speed
                 self.direction = "left"
             else:
@@ -280,7 +283,7 @@ class Ghost:
 
         elif (self.movement == "right" and
             not self.check_wall_collision(self.movement)):
-            if (self.y - 15) % 54 == 0:
+            if (self.y - CENTER_OFFSET) % CELL_SIZE == 0:
                 self.x += self.speed
                 self.direction = "right"
             else:
@@ -288,7 +291,7 @@ class Ghost:
 
         elif (self.movement == "up" and
             not self.check_wall_collision(self.movement)):
-            if (self.x - 15) % 54 == 0:
+            if (self.x - CENTER_OFFSET) % CELL_SIZE == 0:
                 self.y -= self.speed
                 self.direction = "up"
             else:
@@ -296,7 +299,7 @@ class Ghost:
 
         elif (self.movement == "down" and
             not self.check_wall_collision(self.movement)):
-            if (self.x - 15) % 54 == 0:
+            if (self.x - CENTER_OFFSET) % CELL_SIZE == 0:
                 self.y += self.speed
                 self.direction = "down"
             else:
@@ -402,17 +405,17 @@ class Ghost:
         if 4250 <= self.flee_timer < 4500:
             self.fleeing = "grey"
         if 4500 <= self.flee_timer < 4750:
-            self.fleeing = "grey"
+            self.fleeing = "blue"
         if 4750 <= self.flee_timer < 5000:
-            self.fleeing = "blue"
+            self.fleeing = "grey"
         if 5000 <= self.flee_timer < 5250:
-            self.fleeing = "grey"
+            self.fleeing = "blue"
         if 5250 <= self.flee_timer < 5500:
-            self.fleeing = "blue"
-        if 5500 <= self.flee_timer < 5750:
             self.fleeing = "grey"
-        if 5750 <= self.flee_timer < 6000:
+        if 5500 <= self.flee_timer < 5750:
             self.fleeing = "blue"
+        if 5750 <= self.flee_timer < 6000:
+            self.fleeing = "grey"
         if self.flee_timer >= 6000:
             self.fix_coords()
             self.flee_timer = 0
@@ -441,64 +444,64 @@ class Ghost:
         if abs((self.prev_x - self.x)) + abs((self.prev_y - self.y)) > 4:
             self.change_animation()
 
-        row, col = self.y // 54, self.x // 54
+        row, col = self.y // CELL_SIZE, self.x // CELL_SIZE
         self.cell = (row, col)
         next_step = self.path_finding(target_cell)
         c = self.maze[row][col]
 
         if next_step == "left":
             self.movement = "left"
-            if (self.y - 15) % 54 != 0:
+            if (self.y - CENTER_OFFSET) % CELL_SIZE != 0:
                 self.predict_move()
                 return
         if next_step == "right":
             self.movement = "right"
-            if (self.y - 15) % 54 != 0:
+            if (self.y - CENTER_OFFSET) % CELL_SIZE != 0:
                 self.predict_move()
                 return
         if next_step == "up":
             self.movement = "up"
-            if (self.x - 15) % 54 != 0:
+            if (self.x - CENTER_OFFSET) % CELL_SIZE != 0:
                 self.predict_move()
                 return
         if next_step == "down":
             self.movement = "down"
-            if (self.x - 15) % 54 != 0:
+            if (self.x - CENTER_OFFSET) % CELL_SIZE != 0:
                 self.predict_move()
                 return
 
         if self.movement == "left":
-            row, col = (self.y - 4) // 54, (self.x + 38) // 54
+            row, col = (self.y - 4) // CELL_SIZE, (self.x + 38) // CELL_SIZE
             c = self.maze[row][col]
-            if not (c == 8 or c == 9 or c == 10 or c == 11 or c == 12 or c == 13 or c == 14 or c == 15):
-                if (self.y - 15) % 54 == 0:
+            if not (c == 8 or c == 9 or c == 10 or c == 11 or c == 12 or c == 13 or c == 14 or c == CENTER_OFFSET):
+                if (self.y - CENTER_OFFSET) % CELL_SIZE == 0:
                     self.x -= self.speed
                     self.direction = "left"
                 else:
                     self.predict_move()
         elif self.movement == "right":
-            row, col = (self.y - 4) // 54, (self.x - 14) // 54
+            row, col = (self.y - 4) // CELL_SIZE, (self.x - 14) // CELL_SIZE
             c = self.maze[row][col]
-            if not (c == 2 or c == 3 or c == 6 or c == 7 or c == 10 or c == 11 or c == 14 or c == 15):
-                if (self.y - 15) % 54 == 0:
+            if not (c == 2 or c == 3 or c == 6 or c == 7 or c == 10 or c == 11 or c == 14 or c == CENTER_OFFSET):
+                if (self.y - CENTER_OFFSET) % CELL_SIZE == 0:
                     self.x += self.speed
                     self.direction = "right"
                 else:
                     self.predict_move()
         elif self.movement == "up":
-            row, col = (self.y + 37) // 54, (self.x - 4) // 54
+            row, col = (self.y + 37) // CELL_SIZE, (self.x - 4) // CELL_SIZE
             c = self.maze[row][col]
-            if not (c == 1 or c == 3 or c == 5 or c == 7 or c == 9 or c == 11 or c == 13 or c == 15):
-                if (self.x - 15) % 54 == 0:
+            if not (c == 1 or c == 3 or c == 5 or c == 7 or c == 9 or c == 11 or c == 13 or c == CENTER_OFFSET):
+                if (self.x - CENTER_OFFSET) % CELL_SIZE == 0:
                     self.y -= self.speed
                     self.direction = "up"
                 else:
                     self.predict_move()
         elif self.movement == "down":
-            row, col = (self.y - 14) // 54, (self.x - 4) // 54
+            row, col = (self.y - 14) // CELL_SIZE, (self.x - 4) // CELL_SIZE
             c = self.maze[row][col]
-            if not (c == 4 or c == 5 or c == 6 or c == 7 or c == 12 or c == 13 or c == 14 or c == 15):
-                if (self.x - 15) % 54 == 0:
+            if not (c == 4 or c == 5 or c == 6 or c == 7 or c == 12 or c == 13 or c == 14 or c == CENTER_OFFSET):
+                if (self.x - CENTER_OFFSET) % CELL_SIZE == 0:
                     self.y += self.speed
                     self.direction = "down"
                 else:

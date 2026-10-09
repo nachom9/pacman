@@ -1,12 +1,15 @@
 import pygame
 
+CELL_SIZE = 54
+CENTER_OFFSET = 15
+
 class Pacman:
     def __init__(self, size, maze, walls):
         self.lives = 3
-        self.x = (len(maze[0]) // 2 * 54) + 15
-        self.y = (len(maze) // 2 * 54) + 15
-        self.prev_x = (len(maze[0]) // 2 * 54) + 15
-        self.prev_y = (len(maze) // 2 * 54) + 15
+        self.x = (len(maze[0]) // 2 * CELL_SIZE) + CENTER_OFFSET
+        self.y = (len(maze) // 2 * CELL_SIZE) + CENTER_OFFSET
+        self.prev_x = (len(maze[0]) // 2 * CELL_SIZE) + CENTER_OFFSET
+        self.prev_y = (len(maze) // 2 * CELL_SIZE) + CENTER_OFFSET
         self.speed = 2
         self.movement = ""
         self.mouth = 0
@@ -96,6 +99,7 @@ class Pacman:
         for ghost in ghosts:
             ghost.mode = 'flee'
             ghost.flee_timer = 0
+            ghost.fleeing = 'blue'
 
     def move(self, keys, drawn_maze, ghosts):
         if self.brave_reset == 4:
@@ -103,9 +107,9 @@ class Pacman:
             self.brave = False
             for ghost in ghosts:
                 ghost.mode = "chase"
-        row_n, col_n = (self.y + 50) // 54, (self.x + 50) // 54
-        margin = 15
-        row, col = self.y // 54, self.x // 54
+        row_n, col_n = (self.y + 50) // CELL_SIZE, (self.x + 50) // CELL_SIZE
+        margin = CENTER_OFFSET
+        row, col = self.y // CELL_SIZE, self.x // CELL_SIZE
         self.cell = (row, col)
 
         if keys[pygame.K_LEFT]:
@@ -119,10 +123,10 @@ class Pacman:
 
         if (self.movement == "left" and
                 not self.check_wall_collision(self.movement)):
-            if (self.y - margin) % 54 == 0:
+            if (self.y - margin) % CELL_SIZE == 0:
                 self.x -= self.speed
                 self.direction = "left"
-                row_n, col_n = (self.y + 50) // 54, (self.x + 77) // 54
+                row_n, col_n = (self.y + 50) // CELL_SIZE, (self.x + 77) // CELL_SIZE
 
                 if drawn_maze.cells_gums[(row_n, col_n)]:
                     if ((self.cell[0] == 0 and self.cell[1] == 0) or
@@ -143,8 +147,8 @@ class Pacman:
 
         elif (self.movement == "right" and
             not self.check_wall_collision(self.movement)):
-            if (self.y - margin) % 54 == 0:
-                row_n, col_n = (self.y + 50) // 54, (self.x + 50) // 54
+            if (self.y - margin) % CELL_SIZE == 0:
+                row_n, col_n = (self.y + 50) // CELL_SIZE, (self.x + 50) // CELL_SIZE
                 self.x += self.speed
                 self.direction = "right"
 
@@ -167,8 +171,8 @@ class Pacman:
 
         elif (self.movement == "up" and
             not self.check_wall_collision(self.movement)):
-            if (self.x - margin) % 54 == 0:
-                row_n, col_n = (self.y + 77) // 54, (self.x + 50) // 54
+            if (self.x - margin) % CELL_SIZE == 0:
+                row_n, col_n = (self.y + 77) // CELL_SIZE, (self.x + 50) // CELL_SIZE
                 self.y -= self.speed
                 self.direction = "up"
 
@@ -191,8 +195,8 @@ class Pacman:
 
         elif (self.movement == "down" and
             not self.check_wall_collision(self.movement)):
-            if (self.x - margin) % 54 == 0:
-                row_n, col_n = (self.y + 50) // 54, (self.x + 50) // 54
+            if (self.x - margin) % CELL_SIZE == 0:
+                row_n, col_n = (self.y + 50) // CELL_SIZE, (self.x + 50) // CELL_SIZE
                 self.y += self.speed
                 self.direction = "down"
 
@@ -259,10 +263,10 @@ class Pacman:
     def reset_round(self, ghosts, maze):
         size = ((len(maze[0]), len(maze[1])))
         self.lives -= 1
-        self.x = (len(maze[0]) // 2 * 54) + 15
-        self.y = (len(maze) // 2 * 54) + 15
-        self.prev_x = (len(maze[0]) // 2 * 54) + 15
-        self.prev_y = (len(maze) // 2 * 54) + 15
+        self.x = (len(maze[0]) // 2 * CELL_SIZE) + CENTER_OFFSET
+        self.y = (len(maze) // 2 * CELL_SIZE) + CENTER_OFFSET
+        self.prev_x = (len(maze[0]) // 2 * CELL_SIZE) + CENTER_OFFSET
+        self.prev_y = (len(maze) // 2 * CELL_SIZE) + CENTER_OFFSET
         self.movement = "left"
         self.mouth = 0
         self.mouth_name = "opened"
@@ -274,34 +278,34 @@ class Pacman:
 
         for ghost in ghosts:
             if ghost.color == "red":
-                ghost.x = 15
-                ghost.y = 15
-                ghost.prev_x = 15
-                ghost.prev_y = 15
+                ghost.x = CENTER_OFFSET
+                ghost.y = CENTER_OFFSET
+                ghost.prev_x = CENTER_OFFSET
+                ghost.prev_y = CENTER_OFFSET
                 ghost.direction = "right"
                 ghost.movement = "right"
                 ghost.cell = (0, 0)
             elif ghost.color == "pink":
-                ghost.x = (size[0] - 1) * 54 + 15
-                ghost.y = 15
-                ghost.prev_x = (size[0] - 1) * 54 + 15
-                ghost.prev_y = 15
+                ghost.x = (size[0] - 1) * CELL_SIZE + CENTER_OFFSET
+                ghost.y = CENTER_OFFSET
+                ghost.prev_x = (size[0] - 1) * CELL_SIZE + CENTER_OFFSET
+                ghost.prev_y = CENTER_OFFSET
                 ghost.direction = "left"
                 ghost.movement = "left"
                 ghost.cell = (size[0] - 1, 0)
             elif ghost.color == "blue":
-                ghost.x = 15
-                ghost.y = (size[1] - 1) * 54 + 15
-                ghost.prev_x = 15
-                ghost.prev_y = (size[1] - 1) * 54 + 15
+                ghost.x = CENTER_OFFSET
+                ghost.y = (size[1] - 1) * CELL_SIZE + CENTER_OFFSET
+                ghost.prev_x = CENTER_OFFSET
+                ghost.prev_y = (size[1] - 1) * CELL_SIZE + CENTER_OFFSET
                 ghost.direction = "right"
                 ghost.movement = "right"
                 ghost.cell = (0, size[1] - 1)
             elif ghost.color == "orange":
-                ghost.x = (size[0] - 1) * 54 + 15
-                ghost.y = (size[1] - 1) * 54 + 15
-                ghost.prev_x = (size[0] - 1) * 54 + 15
-                ghost.prev_y = (size[1] - 1) * 54 + 15
+                ghost.x = (size[0] - 1) * CELL_SIZE + CENTER_OFFSET
+                ghost.y = (size[1] - 1) * CELL_SIZE + CENTER_OFFSET
+                ghost.prev_x = (size[0] - 1) * CELL_SIZE + CENTER_OFFSET
+                ghost.prev_y = (size[1] - 1) * CELL_SIZE + CENTER_OFFSET
                 ghost.direction = "left"
                 ghost.movement = "left"
                 ghost.cell = (size[0] - 1, size[1] - 1)
