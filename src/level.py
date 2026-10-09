@@ -26,7 +26,7 @@ def maze_pixel_size(width: int, height: int) -> tuple[int, int]:
 
 class Level:
     """A single level of the game."""
- 
+
     def __init__(
         self,
         screen: pygame.Surface,
@@ -40,7 +40,7 @@ class Level:
         max_time: int,
     ) -> None:
         """Generate the maze and create everything the level needs.
- 
+
         Args:
             screen: Window surface to draw on.
             clock: Clock used to limit the frame rate.
@@ -51,7 +51,7 @@ class Level:
             number: Level number shown in the HUD (starts at 1).
             seed: Maze seed. 0 means a random maze.
             max_time: Time limit of the level in seconds.
- 
+
         Raises:
             LevelError: If the maze generator fails.
         """
@@ -62,7 +62,7 @@ class Level:
         self.pause_menu = pause_menu
         self.number = number
         self.max_time = max_time
- 
+
         self.size = (level_config.width, level_config.height)
         try:
             maze_obj = MazeGenerator(
@@ -80,7 +80,7 @@ class Level:
 
         self.drawn_maze = DrawnMaze(size=self.size, cells=self.maze)
         self.map_surface = self.drawn_maze.draw_map()
- 
+
         self.pacman = Pacman(self.size, self.maze, self.drawn_maze.walls)
         self.ghosts = [
             Ghost(self.size, self.maze, "red", self.drawn_maze.walls),
@@ -99,7 +99,7 @@ class Level:
 
     def run(self) -> None:
         """Play the level until it ends.
- 
+
         Returns:
             "quit" if the player closed the window or quit from pause.
         """
@@ -120,14 +120,14 @@ class Level:
                         if result == "quit":
                             return "quit"
                         time.pause(pygame.time.get_ticks() - pause_start)
- 
+
             if pacman.state == "playing":
                 keys = pygame.key.get_pressed()
-                pacman.move(keys, self.drawn_maze)
+                pacman.move(keys, self.drawn_maze, self.ghosts)
                 for ghost in ghosts:
-                    ghost.set_behaviour(pacman, 
-                                        pacman.movement, 
-                                        ghosts[0].cell, 
+                    ghost.set_behaviour(pacman,
+                                        pacman.movement,
+                                        ghosts[0].cell,
                                         timer)
                     sprite = self.ghosts_sprites[ghost.color][ghost.direction][ghost.frame]
                     if not pacman.brave:
@@ -152,11 +152,11 @@ class Level:
                 pacman_surface = sheet.subsurface(pygame.Rect(death_frame))
             elif pacman.state == "death":
                 pacman.reset_round(ghosts, self.maze)
- 
+
             self._draw(pacman_surface, time.get_elapsed_time())
             pygame.display.flip()
             timer = self.clock.tick(60)
- 
+
     def _draw(self, pacman_surface: pygame.Surface, elapsed: int) -> None:
         """Draw the maze, the characters and the HUD on the screen."""
         ox, oy = self.offset_x, self.offset_y
@@ -168,7 +168,7 @@ class Level:
         self.screen.blit(
             pacman_surface, (self.pacman.x + ox, self.pacman.y + oy)
         )
- 
+
         self.hud.draw_score(self.screen, self.pacman.score)
         self.hud.draw_lives(self.screen, self.pacman.lives)
         self.hud.draw_level(self.screen, self.number)

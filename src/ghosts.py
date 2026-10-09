@@ -119,17 +119,6 @@ class Ghost:
             return
         else:
             self.speed = 2
-            print(
-                self.color,
-                "RETURN NORMAL:",
-                self.x,
-                self.y,
-                "MOD:",
-                (self.x - 15) % 54,
-                (self.y - 15) % 54,
-                "CELL:",
-                self.cell
-            )
         if pacman.rect.colliderect(self.rect):
             pacman.state = "dying"
         if self.color == 'red':
