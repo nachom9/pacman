@@ -6,6 +6,7 @@ from src.level import maze_pixel_size
 from src.main_menu import MainMenu
 from src.pause_menu import PauseMenu
 from src.death_end_game import DeathEndGame
+from src.name_entry import NameEntry
 from src.parse_entry import ConfigLoader, ConfigError, LevelConfig
 import sys
 import pygame
@@ -52,6 +53,8 @@ def main():
     hud = HUD(width, height, spritesheet)
     pause_menu = PauseMenu(width, height)
     death_end_game = DeathEndGame(width, height)
+    name_entry = NameEntry(width, height)
+
 
     first = True
     for index, level_config in enumerate(config.levels):
@@ -63,7 +66,7 @@ def main():
         try:
             level = Level(
                     screen, clock, spritesheet, hud, pause_menu,
-                    death_end_game, level_config, index + 1, seed,
+                    death_end_game, name_entry, level_config, index + 1, seed,
                     config.level_max_time,
                 )
         except LevelError as e:

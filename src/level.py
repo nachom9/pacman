@@ -11,6 +11,7 @@ from src.pacman import Pacman
 from src.parse_entry import LevelConfig
 from src.pause_menu import PauseMenu
 from src.death_end_game import DeathEndGame
+from src.name_entry import NameEntry
 
 TILE_SIZE = 54
 MAZE_BORDER = 10
@@ -36,6 +37,7 @@ class Level:
         hud: HUD,
         pause_menu: PauseMenu,
         death_end_game: DeathEndGame,
+        name_entry: NameEntry,
         level_config: LevelConfig,
         number: int,
         seed: int,
@@ -63,6 +65,7 @@ class Level:
         self.hud = hud
         self.pause_menu = pause_menu
         self.death_end_game = death_end_game
+        self.name_entry = name_entry
         self.number = number
         self.max_time = max_time
 
@@ -159,10 +162,12 @@ class Level:
                 if pacman.lives > 3:
                     pacman.reset_round(ghosts, self.maze)
                 else:
-                    result = self.death_end_game.run(self.screen, self.clock, pacman.score)
-                    if result == "quit":
+                    death_result = self.death_end_game.run(self.screen, self.clock)
+                    if death_result == "continue":
+                        continue_result = self.name_entry.run(self.screen, self.clock, pacman.score)
+                        return continue_result
+                    else:
                         return "quit"
-
 
             self._draw(pacman_surface, time.get_elapsed_time())
             pygame.display.flip()

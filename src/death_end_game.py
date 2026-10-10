@@ -13,7 +13,6 @@ class DeathEndGame:
         self.timer = 0
 
     def blink(self):
-        print(self.timer // 1000, (self.timer // 1000) % 2)
         if (self.timer // 1000) % 2 == 1:
             return True
         return False
@@ -31,26 +30,15 @@ class DeathEndGame:
             death_instructions_rect = death_instructions.get_rect(center=(center_x, self.screen_height // 2 + 20))
             screen.blit(death_instructions, death_instructions_rect)
 
-    def run(self, screen, clock, score):
+    def run(self, screen, clock):
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return "quit"
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        return "continue"
 
             self.draw(screen)
             pygame.display.flip()
             self.timer += clock.tick(60)
-
-
-'''
-    def draw(self, screen):
-        center_x = self.screen_width // 2
-
-        pause_text = self.font.render("PAUSED", False, WHITE)
-        pause_rect = pause_text.get_rect(center=(center_x, self.screen_height // 4))
-        screen.blit(pause_text, pause_rect)
-
-        pause_instructions = self.font_small.render("Press P to Resume", False, WHITE)
-        instructions_rect = pause_instructions.get_rect(center=(center_x, self.screen_height // 2))
-        screen.blit(pause_instructions, instructions_rect)
-'''
