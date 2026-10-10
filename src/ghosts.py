@@ -344,6 +344,7 @@ class Ghost:
             self.speed = 4
             self.flee_timer = 0
             self.eaten_timer = 1
+            pacman.brave_reset += 1
             return
 
         self.move(self.starting_cell)
@@ -352,7 +353,7 @@ class Ghost:
         if self.eaten_timer > 6000:
             self.mode = "chase"
             self.eaten_timer = 0
-            pacman.brave_reset += 1
+
 
     def flee(self, clock, pacman):
         self.speed = 1

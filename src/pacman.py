@@ -107,7 +107,8 @@ class Pacman:
             self.brave_reset = 0
             self.brave = False
             for ghost in ghosts:
-                ghost.mode = "chase"
+                if ghost.mode == 'flee':
+                    ghost.mode = "chase"
         row_n, col_n = (self.y + 50) // CELL_SIZE, (self.x + 50) // CELL_SIZE
         margin = CENTER_OFFSET
         row, col = self.y // CELL_SIZE, self.x // CELL_SIZE
@@ -313,3 +314,4 @@ class Pacman:
 
             ghost.frame = '0'
             ghost.rect = pygame.Rect(ghost.x, ghost.y, 34, 33)
+            ghost.mode = "chase"
