@@ -5,6 +5,7 @@ from src.level import BOTTOM_SPACE, TOP_SPACE, Level, LevelError
 from src.level import maze_pixel_size
 from src.main_menu import MainMenu
 from src.pause_menu import PauseMenu
+from src.death_end_game import DeathEndGame
 from src.parse_entry import ConfigLoader, ConfigError, LevelConfig
 import sys
 import pygame
@@ -33,7 +34,7 @@ def main():
     max_width = max(level.width for level in config.levels)
     max_height = max(level.height for level in config.levels)
     maze_w, maze_h = maze_pixel_size(max_width, max_height)
-    
+
     pygame.init()
     screen = pygame.display.set_mode(
         (maze_w, maze_h + TOP_SPACE + BOTTOM_SPACE)
@@ -47,8 +48,10 @@ def main():
         return
 
     spritesheet = pygame.image.load("assets/sprites.png").convert_alpha()
-    hud = HUD(screen.get_width(), screen.get_height(), spritesheet)
-    pause_menu = PauseMenu(screen.get_width(), screen.get_height())
+    width, height = screen.get_width(), screen.get_height()
+    hud = HUD(width, height, spritesheet)
+    pause_menu = PauseMenu(width, height)
+    death_end_game = DeathEndGame(width, height)
 
     first = True
     for index, level_config in enumerate(config.levels):
@@ -60,7 +63,8 @@ def main():
         try:
             level = Level(
                     screen, clock, spritesheet, hud, pause_menu,
-                    level_config, index + 1, seed, config.level_max_time,
+                    death_end_game, level_config, index + 1, seed,
+                    config.level_max_time,
                 )
         except LevelError as e:
             print(f"Error: {e}", file=sys.stderr)
