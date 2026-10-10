@@ -14,11 +14,6 @@ class NameEntry:
         self.timer = 0
         self.name_text = ''
 
-    def blink(self):
-        if (self.timer // 1000) % 2 == 1:
-            return True
-        return False
-
     def draw(self, screen, score):
         center_x = self.screen_width // 2
 
