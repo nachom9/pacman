@@ -230,7 +230,8 @@ class Ghost:
         if abs((self.prev_x - self.x)) + abs((self.prev_y - self.y)) > 4:
             self.change_animation()
 
-        self.cell = self.y // CELL_SIZE, self.x // CELL_SIZE
+        self.cell = ((self.y - CENTER_OFFSET + CELL_SIZE // 2) // CELL_SIZE,
+                    (self.x - CENTER_OFFSET + CELL_SIZE // 2) // CELL_SIZE)
 
         if self.is_centered():
             next_step = self.path_finding(target_cell)

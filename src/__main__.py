@@ -44,11 +44,18 @@ def main():
     pygame.display.set_caption("Pacman")
 
     menu = MainMenu(screen.get_width(), screen.get_height())
-    if menu.run(screen, clock) == "quit":
-        pygame.quit()
-        return
 
-    spritesheet = pygame.image.load("assets/sprites.png").convert_alpha()
+    try:
+        spritesheet = pygame.image.load("assets/sprites.png").convert_alpha()
+    except (FileNotFoundError, pygame.error) as e:
+        print(
+            f"Error: cannot load 'assets/sprites.png': {e}\n"
+            "Make sure the file exists and run the game from the project root.",
+            file=sys.stderr,
+        )
+        pygame.quit()
+        sys.exit(1)
+
     width, height = screen.get_width(), screen.get_height()
     hud = HUD(width, height, spritesheet)
     pause_menu = PauseMenu(width, height)
@@ -56,25 +63,34 @@ def main():
     name_entry = NameEntry(width, height)
 
 
-    first = True
-    for index, level_config in enumerate(config.levels):
-        if first == True:
-            seed = config.seed
-            first = False
-        else:
-            seed = 0
-        try:
-            level = Level(
-                    screen, clock, spritesheet, hud, pause_menu,
-                    death_end_game, name_entry, level_config, index + 1, seed,
-                    config.level_max_time, config
-                )
-        except LevelError as e:
-            print(f"Error: {e}", file=sys.stderr)
+    playing = True
+    while playing:
+        if menu.run(screen, clock) == "quit":
             pygame.quit()
-            sys.exit(1)
-        if level.run() == "quit":
-            break
+            return
+        first = True
+        for index, level_config in enumerate(config.levels):
+            if first == True:
+                seed = config.seed
+                first = False
+            else:
+                seed = 0
+            try:
+                level = Level(
+                        screen, clock, spritesheet, hud, pause_menu,
+                        death_end_game, name_entry, level_config, index + 1, seed,
+                        config.level_max_time, config
+                    )
+            except LevelError as e:
+                print(f"Error: {e}", file=sys.stderr)
+                pygame.quit()
+                sys.exit(1)
+            level_result = level.run()
+            if level_result == "quit":
+                playing = False
+                break
+            elif level_result == "score saved":
+                break
 
     pygame.quit()
 

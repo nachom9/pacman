@@ -32,14 +32,16 @@ class NameEntry:
         screen.blit(name_text, name_text_rect)
 
 
-    def run(self, screen, clock, score):
+    def run(self, screen, clock, score, scores_file_name):
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return "quit"
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_KP_ENTER and len(self.name_text) > 0:
-                        save_score(self.name_text, score)
+                    if ((event.key == pygame.K_KP_ENTER or event.key == pygame.K_RETURN)and
+                        len(self.name_text) > 0):
+                        save_score(self.name_text, score, scores_file_name)
+                        return "score saved"
                     elif event.key == pygame.K_BACKSPACE:
                         self.name_text = self.name_text[:-1]
                     else:
