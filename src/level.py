@@ -8,7 +8,7 @@ from src.ghosts import Ghost
 from src.hud import HUD
 from src.level_time import Time
 from src.pacman import Pacman
-from src.parse_entry import LevelConfig
+from src.parse_entry import LevelConfig, ConfigLoader
 from src.pause_menu import PauseMenu
 from src.death_end_game import DeathEndGame
 from src.name_entry import NameEntry
@@ -42,6 +42,7 @@ class Level:
         number: int,
         seed: int,
         max_time: int,
+        config: ConfigLoader,
     ) -> None:
         """Generate the maze and create everything the level needs.
 
@@ -68,6 +69,7 @@ class Level:
         self.name_entry = name_entry
         self.number = number
         self.max_time = max_time
+        self.config = config
 
         self.size = (level_config.width, level_config.height)
         try:
@@ -129,12 +131,17 @@ class Level:
 
             if pacman.state == "playing":
                 keys = pygame.key.get_pressed()
-                pacman.move(keys, self.drawn_maze, self.ghosts)
+                pacman.move(keys,
+                            self.drawn_maze,
+                            self.ghosts,
+                            self.config.points_per_pacgum,
+                            self.config.points_per_super_pacgum)
                 for ghost in ghosts:
                     ghost.set_behaviour(pacman,
                                         pacman.movement,
                                         ghosts[0].cell,
-                                        timer)
+                                        timer,
+                                        self.config.points_per_ghost)
                     sprite = self.ghosts_sprites[ghost.color][ghost.direction][ghost.frame]
                     if ghost.mode == 'chase':
                         ghost.surface = self.spritesheet.subsurface(pygame.Rect(sprite))
@@ -159,7 +166,7 @@ class Level:
                 )
                 pacman_surface = sheet.subsurface(pygame.Rect(death_frame))
             elif pacman.state == "death":
-                if pacman.lives > 3:
+                if pacman.lives > 1:
                     pacman.reset_round(ghosts, self.maze)
                 else:
                     death_result = self.death_end_game.run(self.screen, self.clock)

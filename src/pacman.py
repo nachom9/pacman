@@ -102,7 +102,7 @@ class Pacman:
             ghost.flee_timer = 0
             ghost.fleeing = 'blue'
 
-    def move(self, keys, drawn_maze, ghosts):
+    def move(self, keys, drawn_maze, ghosts, points_per_pacgum, points_per_super_pacgum):
         if self.brave_reset == 4:
             self.brave_reset = 0
             self.brave = False
@@ -138,11 +138,11 @@ class Pacman:
                         self.cell[1] == 0) or
                         (self.cell[0] == len(self.maze[0]) - 1 and
                         self.cell[1] == len(self.maze[1]) - 1)):
-                        self.score += 50
+                        self.score += points_per_super_pacgum
                         self.brave = True
                         Pacman.reset_ghosts(ghosts)
                     else:
-                        self.score += 10
+                        self.score += points_per_pacgum
                     drawn_maze.cells_gums[(row_n, col_n)] = False
             else:
                 self.predict_move()
@@ -162,11 +162,11 @@ class Pacman:
                         self.cell[1] == 0) or
                         (self.cell[0] == len(self.maze[0]) - 1 and
                         self.cell[1] == len(self.maze[1]) - 1)):
-                        self.score += 50
+                        self.score += points_per_super_pacgum
                         self.brave = True
                         Pacman.reset_ghosts(ghosts)
                     else:
-                        self.score += 10
+                        self.score += points_per_pacgum
                     drawn_maze.cells_gums[(row_n, col_n)] = False
             else:
                 self.predict_move()
@@ -186,11 +186,11 @@ class Pacman:
                         self.cell[1] == 0) or
                         (self.cell[0] == len(self.maze[0]) - 1 and
                         self.cell[1] == len(self.maze[1]) - 1)):
-                        self.score += 50
+                        self.score += points_per_super_pacgum
                         self.brave = True
                         Pacman.reset_ghosts(ghosts)
                     else:
-                        self.score += 10
+                        self.score += points_per_pacgum
                     drawn_maze.cells_gums[(row_n, col_n)] = False
             else:
                 self.predict_move()
@@ -210,11 +210,11 @@ class Pacman:
                         self.cell[1] == 0) or
                         (self.cell[0] == len(self.maze[0]) - 1 and
                         self.cell[1] == len(self.maze[1]) - 1)):
-                        self.score += 50
+                        self.score += points_per_super_pacgum
                         self.brave = True
                         Pacman.reset_ghosts(ghosts)
                     else:
-                        self.score += 10
+                        self.score += points_per_pacgum
                     drawn_maze.cells_gums[(row_n, col_n)] = False
             else:
                 self.predict_move()

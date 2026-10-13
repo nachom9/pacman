@@ -129,12 +129,13 @@ class Ghost:
                 x += +50
         return ghosts
 
-    def set_behaviour(self, pacman, direction, red_ghost_cell, clock):
+    def set_behaviour(self, pacman, direction, red_ghost_cell, clock, points_per_ghost):
         if not pacman.movement:
             return
         if self.mode == 'flee':
             if pacman.rect.colliderect(self.rect):
                 self.mode = "eaten"
+                pacman.score += points_per_ghost
                 return
             else:
                 self.flee(clock, pacman)

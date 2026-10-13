@@ -67,7 +67,7 @@ def main():
             level = Level(
                     screen, clock, spritesheet, hud, pause_menu,
                     death_end_game, name_entry, level_config, index + 1, seed,
-                    config.level_max_time,
+                    config.level_max_time, config
                 )
         except LevelError as e:
             print(f"Error: {e}", file=sys.stderr)

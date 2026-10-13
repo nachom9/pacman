@@ -1,4 +1,5 @@
 import pygame
+from src.scores import load_scores, save_score
 
 FONT_PATH = "assets/fonts/PressStart2P-Regular.ttf"
 RED = (255, 0, 0)
@@ -37,10 +38,13 @@ class NameEntry:
                 if event.type == pygame.QUIT:
                     return "quit"
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_BACKSPACE:
+                    if event.key == pygame.K_KP_ENTER and len(self.name_text) > 0:
+                        save_score(self.name_text, score)
+                    elif event.key == pygame.K_BACKSPACE:
                         self.name_text = self.name_text[:-1]
                     else:
-                        if event.unicode.isprintable() and len(self.name_text) <= 10:
+                        if (event.unicode.isalnum() or event.unicode == " " and
+                            len(self.name_text) < 10):
                             self.name_text += event.unicode
 
             self.draw(screen, score)
