@@ -167,7 +167,7 @@ class Level:
                 )
                 pacman_surface = sheet.subsurface(pygame.Rect(death_frame))
             elif pacman.state == "death":
-                if pacman.lives > 3:
+                if pacman.lives > 1:
                     pacman.reset_round(ghosts, self.maze)
                 else:
                     death_result = self.death_end_game.run(self.screen, self.clock)
