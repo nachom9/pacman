@@ -4,8 +4,8 @@ CELL_SIZE = 54
 CENTER_OFFSET = 15
 
 class Pacman:
-    def __init__(self, size, maze, walls):
-        self.lives = 3
+    def __init__(self, size, maze, walls, config):
+        self.lives = config.lives
         self.x = (len(maze[0]) // 2 * CELL_SIZE) + CENTER_OFFSET
         self.y = (len(maze) // 2 * CELL_SIZE) + CENTER_OFFSET
         self.prev_x = (len(maze[0]) // 2 * CELL_SIZE) + CENTER_OFFSET

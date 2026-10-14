@@ -89,7 +89,7 @@ class Level:
         self.drawn_maze = DrawnMaze(size=self.size, cells=self.maze)
         self.map_surface = self.drawn_maze.draw_map()
 
-        self.pacman = Pacman(self.size, self.maze, self.drawn_maze.walls)
+        self.pacman = Pacman(self.size, self.maze, self.drawn_maze.walls, self.config)
         self.ghosts = [
             Ghost(self.size, self.maze, "red", self.drawn_maze.walls),
             Ghost(self.size, self.maze, "pink", self.drawn_maze.walls),
