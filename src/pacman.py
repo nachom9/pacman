@@ -275,7 +275,7 @@ class Pacman:
         self.y = (len(maze) // 2 * CELL_SIZE) + CENTER_OFFSET
         self.prev_x = (len(maze[0]) // 2 * CELL_SIZE) + CENTER_OFFSET
         self.prev_y = (len(maze) // 2 * CELL_SIZE) + CENTER_OFFSET
-        self.movement = "left"
+        self.movement = ""
         self.mouth = 0
         self.mouth_name = "opened"
         self.cell = (size[0] // 2, size[1] // 2)
@@ -283,6 +283,7 @@ class Pacman:
         self.state = "playing"
         self.rect = pygame.Rect(self.x, self.y, 34, 33)
         self.death_timer = 0
+
 
         for ghost in ghosts:
             if ghost.color == "red":

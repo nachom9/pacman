@@ -15,7 +15,7 @@ class DrawnMaze:
         print(self.cells)
         z = 9
         a = 4
-        map_surface = pygame.Surface((self.size[0] * 54 + 9, self.size[1] * 54 + 9))
+        map_surface = pygame.Surface((self.size[0] * 54 + 10, self.size[1] * 54 + 10))
         x, y = 4, 4
 
         for row in self.cells:
