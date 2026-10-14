@@ -1,6 +1,5 @@
 import pygame
 
-
 class HUD:
     def __init__(self, screen_width, screen_height, spritesheet):
         self.screen_width = screen_width
@@ -18,13 +17,13 @@ class HUD:
     def draw_score(self, screen, score):
         score_label = self.font.render("SCORE", True, (255, 255, 255))
         score_value = self.font.render(str(score), True, (255, 255, 255))
-        
+
         score_label_rect = score_label.get_rect()
         score_value_rect = score_value.get_rect()
-        
+
         score_label_rect.center = (screen.get_width() // 2, 30)
         score_value_rect.center = (screen.get_width() // 2, 65)
-        
+
         screen.blit(score_label, score_label_rect)
         screen.blit(score_value, score_value_rect)
 
@@ -62,7 +61,7 @@ class HUD:
     def draw_level(self, screen, level):
         level_label = self.font_small.render(f"LEVEL {level}", True, (255, 255, 255))
         level_label_rect = level_label.get_rect()
-        level_label_rect.center = (self.screen_width - 95, self.screen_height - 32)    
+        level_label_rect.center = (self.screen_width - 95, self.screen_height - 32)
         screen.blit(level_label, level_label_rect)
 
     def draw_time(self, screen, elapsed_seconds, level_time=90):

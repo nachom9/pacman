@@ -145,7 +145,10 @@ class Ghost:
             return
         else:
             self.speed = 2
-        if pacman.rect.colliderect(self.rect) and self.mode == "chase":
+        if (pacman.rect.colliderect(self.rect) and
+            self.mode == "chase" and
+            pacman.cell == self.cell and
+            pacman.cheat_mode == False):
             pacman.state = "dying"
         if self.color == 'red':
             target_cell = pacman.cell

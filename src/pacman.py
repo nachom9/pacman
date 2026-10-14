@@ -26,6 +26,7 @@ class Pacman:
         self.sprites = []
         self.brave_reset = 0
         self.walls = walls
+        self.cheat_mode = False
 
     def get_sprites(self):
         pacman_coords = {
@@ -95,14 +96,15 @@ class Pacman:
 
         return False
 
-    @staticmethod
-    def reset_ghosts(ghosts):
+    def reset_ghosts(self, ghosts):
         for ghost in ghosts:
-            ghost.mode = 'flee'
-            ghost.flee_timer = 0
-            ghost.fleeing = 'blue'
+            if ghost.mode == "chase":
+                ghost.mode = 'flee'
+                ghost.flee_timer = 0
+                ghost.fleeing = 'blue'
 
     def move(self, keys, drawn_maze, ghosts, points_per_pacgum, points_per_super_pacgum):
+        print(self.brave_reset, self.brave)
         if self.brave_reset == 4:
             self.brave_reset = 0
             self.brave = False
@@ -123,101 +125,109 @@ class Pacman:
         if keys[pygame.K_DOWN]:
             self.movement = "down"
 
-        if (self.movement == "left" and
-                not self.check_wall_collision(self.movement)):
-            if (self.y - margin) % CELL_SIZE == 0:
-                self.x -= self.speed
-                self.direction = "left"
-                row_n, col_n = (self.y + 50) // CELL_SIZE, (self.x + 77) // CELL_SIZE
+        if self.movement == "left":
+            if not self.check_wall_collision(self.movement):
+                if (self.y - margin) % CELL_SIZE == 0:
+                    self.x -= self.speed
+                    self.direction = "left"
+                    row_n, col_n = (self.y + 50) // CELL_SIZE, (self.x + 77) // CELL_SIZE
 
-                if drawn_maze.cells_gums[(row_n, col_n)]:
-                    if ((self.cell[0] == 0 and self.cell[1] == 0) or
-                        (self.cell[0] == 0 and
-                        self.cell[1] == len(self.maze[1]) - 1) or
-                        (self.cell[0] == len(self.maze[0]) - 1 and
-                        self.cell[1] == 0) or
-                        (self.cell[0] == len(self.maze[0]) - 1 and
-                        self.cell[1] == len(self.maze[1]) - 1)):
-                        self.score += points_per_super_pacgum
-                        self.brave = True
-                        Pacman.reset_ghosts(ghosts)
-                    else:
-                        self.score += points_per_pacgum
-                    drawn_maze.cells_gums[(row_n, col_n)] = False
+                    if drawn_maze.cells_gums[(row_n, col_n)]:
+                        if ((self.cell[0] == 0 and self.cell[1] == 0) or
+                            (self.cell[0] == 0 and
+                            self.cell[1] == len(self.maze[1]) - 1) or
+                            (self.cell[0] == len(self.maze[0]) - 1 and
+                            self.cell[1] == 0) or
+                            (self.cell[0] == len(self.maze[0]) - 1 and
+                            self.cell[1] == len(self.maze[1]) - 1)):
+                            self.score += points_per_super_pacgum
+                            self.brave = True
+                            self.reset_ghosts(ghosts)
+                        else:
+                            self.score += points_per_pacgum
+                        drawn_maze.cells_gums[(row_n, col_n)] = False
+                else:
+                    self.predict_move()
             else:
-                self.predict_move()
+                self.movement = self.direction
 
-        elif (self.movement == "right" and
-            not self.check_wall_collision(self.movement)):
-            if (self.y - margin) % CELL_SIZE == 0:
-                row_n, col_n = (self.y + 50) // CELL_SIZE, (self.x + 50) // CELL_SIZE
-                self.x += self.speed
-                self.direction = "right"
+        elif self.movement == "right":
+            if not self.check_wall_collision(self.movement):
+                if (self.y - margin) % CELL_SIZE == 0:
+                    row_n, col_n = (self.y + 50) // CELL_SIZE, (self.x + 50) // CELL_SIZE
+                    self.x += self.speed
+                    self.direction = "right"
 
-                if drawn_maze.cells_gums[(row_n, col_n)]:
-                    if ((self.cell[0] == 0 and self.cell[1] == 0) or
-                        (self.cell[0] == 0 and
-                        self.cell[1] == len(self.maze[1]) - 1) or
-                        (self.cell[0] == len(self.maze[0]) - 1 and
-                        self.cell[1] == 0) or
-                        (self.cell[0] == len(self.maze[0]) - 1 and
-                        self.cell[1] == len(self.maze[1]) - 1)):
-                        self.score += points_per_super_pacgum
-                        self.brave = True
-                        Pacman.reset_ghosts(ghosts)
-                    else:
-                        self.score += points_per_pacgum
-                    drawn_maze.cells_gums[(row_n, col_n)] = False
+                    if drawn_maze.cells_gums[(row_n, col_n)]:
+                        if ((self.cell[0] == 0 and self.cell[1] == 0) or
+                            (self.cell[0] == 0 and
+                            self.cell[1] == len(self.maze[1]) - 1) or
+                            (self.cell[0] == len(self.maze[0]) - 1 and
+                            self.cell[1] == 0) or
+                            (self.cell[0] == len(self.maze[0]) - 1 and
+                            self.cell[1] == len(self.maze[1]) - 1)):
+                            self.score += points_per_super_pacgum
+                            self.brave = True
+                            self.reset_ghosts(ghosts)
+                        else:
+                            self.score += points_per_pacgum
+                        drawn_maze.cells_gums[(row_n, col_n)] = False
+                else:
+                    self.predict_move()
             else:
-                self.predict_move()
+                self.movement = self.direction
 
-        elif (self.movement == "up" and
-            not self.check_wall_collision(self.movement)):
-            if (self.x - margin) % CELL_SIZE == 0:
-                row_n, col_n = (self.y + 77) // CELL_SIZE, (self.x + 50) // CELL_SIZE
-                self.y -= self.speed
-                self.direction = "up"
+        elif self.movement == "up":
+            if not self.check_wall_collision(self.movement):
+                if (self.x - margin) % CELL_SIZE == 0:
+                    row_n, col_n = (self.y + 77) // CELL_SIZE, (self.x + 50) // CELL_SIZE
+                    self.y -= self.speed
+                    self.direction = "up"
 
-                if drawn_maze.cells_gums[(row_n, col_n)]:
-                    if ((self.cell[0] == 0 and self.cell[1] == 0) or
-                        (self.cell[0] == 0 and
-                        self.cell[1] == len(self.maze[1]) - 1) or
-                        (self.cell[0] == len(self.maze[0]) - 1 and
-                        self.cell[1] == 0) or
-                        (self.cell[0] == len(self.maze[0]) - 1 and
-                        self.cell[1] == len(self.maze[1]) - 1)):
-                        self.score += points_per_super_pacgum
-                        self.brave = True
-                        Pacman.reset_ghosts(ghosts)
-                    else:
-                        self.score += points_per_pacgum
-                    drawn_maze.cells_gums[(row_n, col_n)] = False
+                    if drawn_maze.cells_gums[(row_n, col_n)]:
+                        if ((self.cell[0] == 0 and self.cell[1] == 0) or
+                            (self.cell[0] == 0 and
+                            self.cell[1] == len(self.maze[1]) - 1) or
+                            (self.cell[0] == len(self.maze[0]) - 1 and
+                            self.cell[1] == 0) or
+                            (self.cell[0] == len(self.maze[0]) - 1 and
+                            self.cell[1] == len(self.maze[1]) - 1)):
+                            self.score += points_per_super_pacgum
+                            self.brave = True
+                            self.reset_ghosts(ghosts)
+                        else:
+                            self.score += points_per_pacgum
+                        drawn_maze.cells_gums[(row_n, col_n)] = False
+                else:
+                    self.predict_move()
             else:
-                self.predict_move()
+                self.movement = self.direction
 
-        elif (self.movement == "down" and
-            not self.check_wall_collision(self.movement)):
-            if (self.x - margin) % CELL_SIZE == 0:
-                row_n, col_n = (self.y + 50) // CELL_SIZE, (self.x + 50) // CELL_SIZE
-                self.y += self.speed
-                self.direction = "down"
+        elif self.movement == "down":
+            if not self.check_wall_collision(self.movement):
+                if (self.x - margin) % CELL_SIZE == 0:
+                    row_n, col_n = (self.y + 50) // CELL_SIZE, (self.x + 50) // CELL_SIZE
+                    self.y += self.speed
+                    self.direction = "down"
 
-                if drawn_maze.cells_gums[(row_n, col_n)]:
-                    if ((self.cell[0] == 0 and self.cell[1] == 0) or
-                        (self.cell[0] == 0 and
-                        self.cell[1] == len(self.maze[1]) - 1) or
-                        (self.cell[0] == len(self.maze[0]) - 1 and
-                        self.cell[1] == 0) or
-                        (self.cell[0] == len(self.maze[0]) - 1 and
-                        self.cell[1] == len(self.maze[1]) - 1)):
-                        self.score += points_per_super_pacgum
-                        self.brave = True
-                        Pacman.reset_ghosts(ghosts)
-                    else:
-                        self.score += points_per_pacgum
-                    drawn_maze.cells_gums[(row_n, col_n)] = False
+                    if drawn_maze.cells_gums[(row_n, col_n)]:
+                        if ((self.cell[0] == 0 and self.cell[1] == 0) or
+                            (self.cell[0] == 0 and
+                            self.cell[1] == len(self.maze[1]) - 1) or
+                            (self.cell[0] == len(self.maze[0]) - 1 and
+                            self.cell[1] == 0) or
+                            (self.cell[0] == len(self.maze[0]) - 1 and
+                            self.cell[1] == len(self.maze[1]) - 1)):
+                            self.score += points_per_super_pacgum
+                            self.brave = True
+                            self.reset_ghosts(ghosts)
+                        else:
+                            self.score += points_per_pacgum
+                        drawn_maze.cells_gums[(row_n, col_n)] = False
+                else:
+                    self.predict_move()
             else:
-                self.predict_move()
+                self.movement = self.direction
 
         self.rect.x = self.x
         self.rect.y = self.y
@@ -315,3 +325,9 @@ class Pacman:
             ghost.frame = '0'
             ghost.rect = pygame.Rect(ghost.x, ghost.y, 34, 33)
             ghost.mode = "chase"
+
+    def change_cheat_mode(self):
+        if not self.cheat_mode:
+            self.cheat_mode = True
+        else:
+            self.cheat_mode = False

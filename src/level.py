@@ -128,7 +128,8 @@ class Level:
                         if result == "quit":
                             return "quit"
                         time.pause(pygame.time.get_ticks() - pause_start)
-
+                    elif event.key == pygame.K_c:
+                        pacman.change_cheat_mode()
             if pacman.state == "playing":
                 keys = pygame.key.get_pressed()
                 pacman.move(keys,
@@ -176,6 +177,7 @@ class Level:
                                                               pacman.score,
                                                               self.config.highscore_filename)
                         return continue_result
+                    return "quit"
 
             self._draw(pacman_surface, time.get_elapsed_time())
             pygame.display.flip()
