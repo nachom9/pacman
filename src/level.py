@@ -4,6 +4,7 @@ import pygame
 from mazegenerator import MazeGenerator
 
 from src.draw_maze import DrawnMaze
+from src.game_stats import GameStats
 from src.ghosts import Ghost
 from src.hud import HUD
 from src.level_time import Time
@@ -43,6 +44,7 @@ class Level:
         seed: int,
         max_time: int,
         config: ConfigLoader,
+        stats: GameStats,
     ) -> None:
         """Generate the maze and create everything the level needs.
 
@@ -56,6 +58,8 @@ class Level:
             number: Level number shown in the HUD (starts at 1).
             seed: Maze seed. 0 means a random maze.
             max_time: Time limit of the level in seconds.
+            config: Game configuration.
+            stats: Score and lives of the game, kept between levels.
 
         Raises:
             LevelError: If the maze generator fails.
@@ -70,6 +74,7 @@ class Level:
         self.number = number
         self.max_time = max_time
         self.config = config
+        self.stats = stats
 
         self.size = (level_config.width, level_config.height)
         try:
@@ -89,7 +94,7 @@ class Level:
         self.drawn_maze = DrawnMaze(size=self.size, cells=self.maze)
         self.map_surface = self.drawn_maze.draw_map()
 
-        self.pacman = Pacman(self.size, self.maze, self.drawn_maze.walls, self.config)
+        self.pacman = Pacman(self.size, self.maze, self.drawn_maze.walls, self.stats)
         self.ghosts = [
             Ghost(self.size, self.maze, "red", self.drawn_maze.walls),
             Ghost(self.size, self.maze, "pink", self.drawn_maze.walls),
@@ -105,7 +110,7 @@ class Level:
         self.offset_x = (screen.get_width() - maze_w) // 2
         self.offset_y = TOP_SPACE + (free_h - maze_h) // 2
 
-    def run(self) -> None:
+    def run(self) -> str:
         """Play the level until it ends.
 
         Returns:
@@ -167,20 +172,22 @@ class Level:
                 )
                 pacman_surface = sheet.subsurface(pygame.Rect(death_frame))
             elif pacman.state == "death":
-                if pacman.lives > 1:
+                if self.stats.lives > 1:
                     pacman.reset_round(ghosts, self.maze)
                 else:
                     death_result = self.death_end_game.run(self.screen, self.clock)
                     if death_result == "continue":
                         continue_result = self.name_entry.run(self.screen,
                                                               self.clock,
-                                                              pacman.score,
+                                                              self.stats.score,
                                                               self.config.highscore_filename)
                         return continue_result
                     return "quit"
 
             self._draw(pacman_surface, time.get_elapsed_time())
             pygame.display.flip()
+            if self.drawn_maze.win_check:
+                return "cleared"
             timer = self.clock.tick(60)
 
     def _draw(self, pacman_surface: pygame.Surface, elapsed: int) -> None:
@@ -195,7 +202,7 @@ class Level:
             pacman_surface, (self.pacman.x + ox, self.pacman.y + oy)
         )
 
-        self.hud.draw_score(self.screen, self.pacman.score)
-        self.hud.draw_lives(self.screen, self.pacman.lives)
+        self.hud.draw_score(self.screen, self.stats.score)
+        self.hud.draw_lives(self.screen, self.stats.lives)
         self.hud.draw_level(self.screen, self.number)
         self.hud.draw_time(self.screen, elapsed, self.max_time)

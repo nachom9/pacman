@@ -135,7 +135,7 @@ class Ghost:
         if self.mode == 'flee':
             if pacman.rect.colliderect(self.rect):
                 self.mode = "eaten"
-                pacman.score += points_per_ghost
+                pacman.stats.score += points_per_ghost
                 return
             else:
                 self.flee(clock, pacman)
@@ -158,7 +158,7 @@ class Ghost:
                 col = min(len(self.maze[1]) - 1, pacman.cell[1] + 4)
                 row = pacman.cell[0]
             elif direction == "down":
-                row = min(len(self.maze[0]) - 1, pacman.cell[0] + 4)
+                row = min(len(self.maze) - 1, pacman.cell[0] + 4)
                 col = pacman.cell[1]
             elif direction == "left":
                 col = max(0, pacman.cell[1] - 4)
@@ -176,7 +176,7 @@ class Ghost:
                 col = min(len(self.maze[1]) - 1, pacman.cell[1] + 4)
                 row = pacman.cell[0]
             elif direction == "up":
-                row = min(len(self.maze[0]) - 1, pacman.cell[0] + 4)
+                row = min(len(self.maze) - 1, pacman.cell[0] + 4)
                 col = pacman.cell[1]
             elif direction == "right":
                 col = max(0, pacman.cell[1] - 4)
@@ -194,7 +194,7 @@ class Ghost:
                 v_col = min(len(self.maze[1]) - 1, pacman.cell[1] + 2)
                 v_row = pacman.cell[0]
             elif direction == "down":
-                v_row = min(len(self.maze[0]) - 1, pacman.cell[0] + 2)
+                v_row = min(len(self.maze) - 1, pacman.cell[0] + 2)
                 v_col = pacman.cell[1]
             elif direction == "left":
                 v_col = max(0, pacman.cell[1] - 2)
@@ -208,9 +208,9 @@ class Ghost:
             row = v_row - row_diff * 2
             col = v_col - col_diff * 2
 
-            while row >= len(self.maze[0]):
+            while row >= len(self.maze):
                 row -= 1
-            while col >= len(self.maze[1]):
+            while col >= len(self.maze[0]):
                 col -= 1
             while row < 0:
                 row += 1
@@ -261,10 +261,11 @@ class Ghost:
         self.rect.x = self.x
         self.rect.y = self.y
 
-    @staticmethod
-    def get_neighbors(current, c):
+    def get_neighbors(self, current, c):
         neighbors = []
         row, col = current
+        last_row = len(self.maze) - 1
+        last_col = len(self.maze[0]) - 1
 
         if not (c & 8) and col > 0:
             neighbors.append([
@@ -272,7 +273,7 @@ class Ghost:
                 "left"
             ])
 
-        if not (c & 2) and col < 14:
+        if not (c & 2) and col < last_col:
             neighbors.append([
                 (row, col + 1),
                 "right"
@@ -284,7 +285,7 @@ class Ghost:
                 "up"
             ])
 
-        if not (c & 4) and row < 14:
+        if not (c & 4) and row < last_row:
             neighbors.append([
                 (row + 1, col),
                 "down"

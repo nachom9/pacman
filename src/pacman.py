@@ -3,22 +3,38 @@ import pygame
 CELL_SIZE = 54
 CENTER_OFFSET = 15
 
+
+def find_spawn_cell(maze):
+    """Return the (row, col) closest to the center that is not a closed cell."""
+    center_row, center_col = len(maze) // 2, len(maze[0]) // 2
+    best_cell = (center_row, center_col)
+    best_dist = None
+    for row in range(len(maze)):
+        for col in range(len(maze[0])):
+            if maze[row][col] != 15:
+                dist = abs(row - center_row) + abs(col - center_col)
+                if best_dist is None or dist < best_dist:
+                    best_dist = dist
+                    best_cell = (row, col)
+    return best_cell
+
+
 class Pacman:
-    def __init__(self, size, maze, walls, config):
-        self.lives = config.lives
-        self.x = (len(maze[0]) // 2 * CELL_SIZE) + CENTER_OFFSET
-        self.y = (len(maze) // 2 * CELL_SIZE) + CENTER_OFFSET
-        self.prev_x = (len(maze[0]) // 2 * CELL_SIZE) + CENTER_OFFSET
-        self.prev_y = (len(maze) // 2 * CELL_SIZE) + CENTER_OFFSET
+    def __init__(self, size, maze, walls, stats):
+        self.stats = stats
+        self.starting_cell = find_spawn_cell(maze)
+        row, col = self.starting_cell
+        self.x = col * CELL_SIZE + CENTER_OFFSET
+        self.y = row * CELL_SIZE + CENTER_OFFSET
+        self.prev_x = self.x
+        self.prev_y = self.y
         self.speed = 2
         self.movement = ""
         self.mouth = 0
         self.mouth_name = "opened"
-        self.cell = (size[0] // 2, size[1] // 2)
-        self.starting_cell = self.cell
+        self.cell = self.starting_cell
         self.maze = maze
         self.direction = "left"
-        self.score = 0
         self.state = "playing"
         self.rect = pygame.Rect(self.x, self.y, 34, 33)
         self.death_timer = 0
@@ -135,15 +151,15 @@ class Pacman:
                         if ((self.cell[0] == 0 and self.cell[1] == 0) or
                             (self.cell[0] == 0 and
                             self.cell[1] == len(self.maze[1]) - 1) or
-                            (self.cell[0] == len(self.maze[0]) - 1 and
+                            (self.cell[0] == len(self.maze) - 1 and
                             self.cell[1] == 0) or
-                            (self.cell[0] == len(self.maze[0]) - 1 and
+                            (self.cell[0] == len(self.maze) - 1 and
                             self.cell[1] == len(self.maze[1]) - 1)):
-                            self.score += points_per_super_pacgum
+                            self.stats.score += points_per_super_pacgum
                             self.brave = True
                             self.reset_ghosts(ghosts)
                         else:
-                            self.score += points_per_pacgum
+                            self.stats.score += points_per_pacgum
                         drawn_maze.cells_gums[(row, col)] = False
                 else:
                     self.predict_move()
@@ -160,15 +176,15 @@ class Pacman:
                         if ((self.cell[0] == 0 and self.cell[1] == 0) or
                             (self.cell[0] == 0 and
                             self.cell[1] == len(self.maze[1]) - 1) or
-                            (self.cell[0] == len(self.maze[0]) - 1 and
+                            (self.cell[0] == len(self.maze) - 1 and
                             self.cell[1] == 0) or
-                            (self.cell[0] == len(self.maze[0]) - 1 and
+                            (self.cell[0] == len(self.maze) - 1 and
                             self.cell[1] == len(self.maze[1]) - 1)):
-                            self.score += points_per_super_pacgum
+                            self.stats.score += points_per_super_pacgum
                             self.brave = True
                             self.reset_ghosts(ghosts)
                         else:
-                            self.score += points_per_pacgum
+                            self.stats.score += points_per_pacgum
                         drawn_maze.cells_gums[(row, col)] = False
                 else:
                     self.predict_move()
@@ -185,15 +201,15 @@ class Pacman:
                         if ((self.cell[0] == 0 and self.cell[1] == 0) or
                             (self.cell[0] == 0 and
                             self.cell[1] == len(self.maze[1]) - 1) or
-                            (self.cell[0] == len(self.maze[0]) - 1 and
+                            (self.cell[0] == len(self.maze) - 1 and
                             self.cell[1] == 0) or
-                            (self.cell[0] == len(self.maze[0]) - 1 and
+                            (self.cell[0] == len(self.maze) - 1 and
                             self.cell[1] == len(self.maze[1]) - 1)):
-                            self.score += points_per_super_pacgum
+                            self.stats.score += points_per_super_pacgum
                             self.brave = True
                             self.reset_ghosts(ghosts)
                         else:
-                            self.score += points_per_pacgum
+                            self.stats.score += points_per_pacgum
                         drawn_maze.cells_gums[(row, col)] = False
                 else:
                     self.predict_move()
@@ -210,15 +226,15 @@ class Pacman:
                         if ((self.cell[0] == 0 and self.cell[1] == 0) or
                             (self.cell[0] == 0 and
                             self.cell[1] == len(self.maze[1]) - 1) or
-                            (self.cell[0] == len(self.maze[0]) - 1 and
+                            (self.cell[0] == len(self.maze) - 1 and
                             self.cell[1] == 0) or
-                            (self.cell[0] == len(self.maze[0]) - 1 and
+                            (self.cell[0] == len(self.maze) - 1 and
                             self.cell[1] == len(self.maze[1]) - 1)):
-                            self.score += points_per_super_pacgum
+                            self.stats.score += points_per_super_pacgum
                             self.brave = True
                             self.reset_ghosts(ghosts)
                         else:
-                            self.score += points_per_pacgum
+                            self.stats.score += points_per_pacgum
                         drawn_maze.cells_gums[(row, col)] = False
                 else:
                     self.predict_move()
@@ -269,16 +285,17 @@ class Pacman:
         return frame
 
     def reset_round(self, ghosts, maze):
-        size = ((len(maze[0]), len(maze[1])))
-        self.lives -= 1
-        self.x = (len(maze[0]) // 2 * CELL_SIZE) + CENTER_OFFSET
-        self.y = (len(maze) // 2 * CELL_SIZE) + CENTER_OFFSET
-        self.prev_x = (len(maze[0]) // 2 * CELL_SIZE) + CENTER_OFFSET
-        self.prev_y = (len(maze) // 2 * CELL_SIZE) + CENTER_OFFSET
+        size = (len(maze[0]), len(maze))
+        self.stats.lives -= 1
+        row, col = self.starting_cell
+        self.x = col * CELL_SIZE + CENTER_OFFSET
+        self.y = row * CELL_SIZE + CENTER_OFFSET
+        self.prev_x = self.x
+        self.prev_y = self.y
         self.movement = ""
         self.mouth = 0
         self.mouth_name = "opened"
-        self.cell = (size[0] // 2, size[1] // 2)
+        self.cell = self.starting_cell
         self.direction = "left"
         self.state = "playing"
         self.rect = pygame.Rect(self.x, self.y, 34, 33)
@@ -293,7 +310,6 @@ class Pacman:
                 ghost.prev_y = CENTER_OFFSET
                 ghost.direction = "right"
                 ghost.movement = "right"
-                ghost.cell = (0, 0)
             elif ghost.color == "pink":
                 ghost.x = (size[0] - 1) * CELL_SIZE + CENTER_OFFSET
                 ghost.y = CENTER_OFFSET
@@ -301,7 +317,6 @@ class Pacman:
                 ghost.prev_y = CENTER_OFFSET
                 ghost.direction = "left"
                 ghost.movement = "left"
-                ghost.cell = (size[0] - 1, 0)
             elif ghost.color == "blue":
                 ghost.x = CENTER_OFFSET
                 ghost.y = (size[1] - 1) * CELL_SIZE + CENTER_OFFSET
@@ -309,7 +324,6 @@ class Pacman:
                 ghost.prev_y = (size[1] - 1) * CELL_SIZE + CENTER_OFFSET
                 ghost.direction = "right"
                 ghost.movement = "right"
-                ghost.cell = (0, size[1] - 1)
             elif ghost.color == "orange":
                 ghost.x = (size[0] - 1) * CELL_SIZE + CENTER_OFFSET
                 ghost.y = (size[1] - 1) * CELL_SIZE + CENTER_OFFSET
@@ -317,8 +331,8 @@ class Pacman:
                 ghost.prev_y = (size[1] - 1) * CELL_SIZE + CENTER_OFFSET
                 ghost.direction = "left"
                 ghost.movement = "left"
-                ghost.cell = (size[0] - 1, size[1] - 1)
 
+            ghost.cell = ghost.starting_cell
             ghost.frame = '0'
             ghost.rect = pygame.Rect(ghost.x, ghost.y, 34, 33)
             ghost.mode = "chase"

@@ -6,6 +6,7 @@ from src.level import maze_pixel_size
 from src.main_menu import MainMenu
 from src.pause_menu import PauseMenu
 from src.death_end_game import DeathEndGame
+from src.game_stats import GameStats
 from src.name_entry import NameEntry
 from src.parse_entry import ConfigLoader, ConfigError, LevelConfig
 import sys
@@ -69,6 +70,7 @@ def main():
             pygame.quit()
             return
         first = True
+        stats = GameStats(config.lives)
         for index, level_config in enumerate(config.levels):
             if first == True:
                 seed = config.seed
@@ -79,7 +81,7 @@ def main():
                 level = Level(
                         screen, clock, spritesheet, hud, pause_menu,
                         death_end_game, name_entry, level_config, index + 1, seed,
-                        config.level_max_time, config
+                        config.level_max_time, config, stats
                     )
             except LevelError as e:
                 print(f"Error: {e}", file=sys.stderr)

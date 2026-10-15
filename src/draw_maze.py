@@ -40,7 +40,7 @@ class DrawnMaze:
                 x += 54
             x = 4
             y += 54
-        x = 54 * len(self.cells) + 4
+        x = 54 * len(self.cells[0]) + 4
         y = 4
         for row in self.cells:
             pygame.draw.line(map_surface, self.color, (x - a, y - a), (x + z - a, y - a), 1)
