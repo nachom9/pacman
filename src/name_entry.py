@@ -33,6 +33,7 @@ class NameEntry:
 
 
     def run(self, screen, clock, score, scores_file_name):
+        self.name_text = ''
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -45,7 +46,7 @@ class NameEntry:
                     elif event.key == pygame.K_BACKSPACE:
                         self.name_text = self.name_text[:-1]
                     else:
-                        if (event.unicode.isalnum() or event.unicode == " " and
+                        if ((event.unicode.isalnum() or event.unicode == " ") and
                             len(self.name_text) < 10):
                             self.name_text += event.unicode
 

@@ -74,3 +74,10 @@ class HUD:
         time_label_rect = time_label.get_rect()
         time_label_rect.center = (self.screen_width // 2, self.screen_height - 30)
         screen.blit(time_label, time_label_rect)
+
+    def draw_cheats(self, screen, ghosts_frozen):
+        cheat_label = self.font_small.render("CHEAT", True, (255, 255, 0))
+        screen.blit(cheat_label, (20, 20))
+        if ghosts_frozen:
+            frozen_label = self.font_small.render("FROZEN", True, (0, 255, 255))
+            screen.blit(frozen_label, (20, 50))

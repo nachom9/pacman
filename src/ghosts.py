@@ -57,6 +57,7 @@ class Ghost:
         self.flee_timer = 0
         self.eaten_timer = 0
         self.walls = walls
+        self.frozen = False
 
     @staticmethod
     def get_sprites():
@@ -148,7 +149,7 @@ class Ghost:
         if (pacman.rect.colliderect(self.rect) and
             self.mode == "chase" and
             pacman.cell == self.cell and
-            pacman.cheat_mode == False):
+            not pacman.stats.cheat_mode):
             pacman.state = "dying"
         if self.color == 'red':
             target_cell = pacman.cell
@@ -230,6 +231,8 @@ class Ghost:
 
 
     def move(self, target_cell):
+        if self.frozen:
+            return
         if abs((self.prev_x - self.x)) + abs((self.prev_y - self.y)) > 4:
             self.change_animation()
 

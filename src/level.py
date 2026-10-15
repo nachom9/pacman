@@ -135,8 +135,14 @@ class Level:
                         time.pause(pygame.time.get_ticks() - pause_start)
                     elif event.key == pygame.K_c:
                         pacman.change_cheat_mode()
+                    elif event.key == pygame.K_n and self.stats.cheat_mode:
+                        return "cleared"
+                    elif event.key == pygame.K_f and self.stats.cheat_mode:
+                        self.stats.ghosts_frozen = not self.stats.ghosts_frozen
             # Running out of time costs a life, like being caught by a ghost.
+            # In cheat mode the player is invincible, so time does not kill.
             if (pacman.state == "playing"
+                    and not self.stats.cheat_mode
                     and time.get_elapsed_time() >= self.max_time):
                 pacman.state = "dying"
             if pacman.state == "playing":
@@ -147,6 +153,8 @@ class Level:
                             self.config.points_per_pacgum,
                             self.config.points_per_super_pacgum)
                 for ghost in ghosts:
+                    ghost.frozen = (self.stats.cheat_mode
+                                    and self.stats.ghosts_frozen)
                     ghost.set_behaviour(pacman,
                                         pacman.movement,
                                         ghosts[0].cell,
@@ -211,3 +219,5 @@ class Level:
         self.hud.draw_lives(self.screen, self.stats.lives)
         self.hud.draw_level(self.screen, self.number)
         self.hud.draw_time(self.screen, elapsed, self.max_time)
+        if self.stats.cheat_mode:
+            self.hud.draw_cheats(self.screen, self.stats.ghosts_frozen)

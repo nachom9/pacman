@@ -42,7 +42,6 @@ class Pacman:
         self.sprites = []
         self.brave_reset = 0
         self.walls = walls
-        self.cheat_mode = False
 
     def get_sprites(self):
         pacman_coords = {
@@ -338,7 +337,7 @@ class Pacman:
             ghost.mode = "chase"
 
     def change_cheat_mode(self):
-        if not self.cheat_mode:
-            self.cheat_mode = True
+        if not self.stats.cheat_mode:
+            self.stats.cheat_mode = True
         else:
-            self.cheat_mode = False
+            self.stats.cheat_mode = False

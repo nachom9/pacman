@@ -4,10 +4,19 @@ FONT_PATH = "assets/fonts/PressStart2P-Regular.ttf"
 WHITE = (255, 255, 255)
 YELLOW = (255, 255, 0)
 
-LINES = [
+CONTROLS = [
     "ARROWS  Move",
     "ESC     Pause",
     "P       Resume",
+    "C       Cheat mode",
+    "N       Skip level (cheat)",
+    "F       Freeze ghosts (cheat)",
+]
+CONTROLS_WIDTH = max(len(line) for line in CONTROLS)
+
+# The font is monospaced: padding every control line to the same length
+# keeps the keys and their descriptions aligned when each line is centered.
+LINES = [line.ljust(CONTROLS_WIDTH) for line in CONTROLS] + [
     "",
     "Eat all the dots",
     "to win the level.",

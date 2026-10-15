@@ -1,4 +1,5 @@
 import json
+import sys
 
 def load_scores(file_name: str):
     try:
@@ -27,6 +28,6 @@ def save_score(name: str, score: int, file_name: str):
     try:
         with open(file_name, "w", encoding="utf-8") as f:
             json.dump(scores, f, indent=2)
-    except OSError as e:
+    except OSError as error:
         print(f"[scores] Warning: cannot save scores: {error.strerror}",
               file=sys.stderr)
