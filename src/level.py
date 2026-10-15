@@ -135,6 +135,10 @@ class Level:
                         time.pause(pygame.time.get_ticks() - pause_start)
                     elif event.key == pygame.K_c:
                         pacman.change_cheat_mode()
+            # Running out of time costs a life, like being caught by a ghost.
+            if (pacman.state == "playing"
+                    and time.get_elapsed_time() >= self.max_time):
+                pacman.state = "dying"
             if pacman.state == "playing":
                 keys = pygame.key.get_pressed()
                 pacman.move(keys,
@@ -174,6 +178,7 @@ class Level:
             elif pacman.state == "death":
                 if self.stats.lives > 1:
                     pacman.reset_round(ghosts, self.maze)
+                    time = Time()
                 else:
                     death_result = self.death_end_game.run(self.screen, self.clock)
                     if death_result == "continue":
