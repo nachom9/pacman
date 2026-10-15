@@ -1,24 +1,22 @@
 import pygame
 
 from src.instructions_menu import InstructionsMenu
+from src.scores import load_scores
 
 FONT_PATH = "assets/fonts/PressStart2P-Regular.ttf"
 WHITE = (255, 255, 255)
 YELLOW = (255, 255, 0)
 
-FAKE_SCORES = [
-    ("Sannaka", 1110),
-    ("foliole", 20),
-    ("Marmelade", 20),
-    ("goldfish", 20),
-]
-
 
 class MainMenu:
 
-    def __init__(self, screen_width: int, screen_height: int) -> None:
+    def __init__(
+        self, screen_width: int, screen_height: int, scores_file_name: str
+    ) -> None:
         self.screen_width = screen_width
         self.screen_height = screen_height
+        self.scores_file_name = scores_file_name
+        self.scores: list[dict] = []
         self.title_font = pygame.font.Font(FONT_PATH, 60)
         self.font = pygame.font.Font(FONT_PATH, 20)
         self.instructions = InstructionsMenu(screen_width, screen_height)
@@ -51,13 +49,18 @@ class MainMenu:
         )
 
         self._draw_centered(screen, "HIGHSCORES", self.font, YELLOW, 400)
+        if not self.scores:
+            self._draw_centered(screen, "No scores yet", self.font, WHITE, 450)
         y = 450
-        for i, (name, score) in enumerate(FAKE_SCORES):
-            line = f"{i + 1}. {name}  {score}"
+        for i, entry in enumerate(self.scores):
+            line = f"{i + 1}. {entry['name']}  {entry['score']}"
             self._draw_centered(screen, line, self.font, WHITE, y)
             y += 35
 
     def run(self, screen: pygame.Surface, clock: pygame.time.Clock) -> str:
+        # Read the file once each time the menu opens (not on every frame),
+        # so a score saved at the end of a game shows up straight away.
+        self.scores = load_scores(self.scores_file_name)
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

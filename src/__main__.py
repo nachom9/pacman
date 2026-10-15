@@ -13,6 +13,9 @@ from src.victory_screen import VictoryScreen
 import sys
 import pygame
 
+# Minimo para que quepa pantalla de inicio e intrucciones.
+MIN_WINDOW_WIDTH = 640
+MIN_WINDOW_HEIGHT = 900
 
 def check_arguments() -> str:
     """Return the config path given on the command line, or exit."""
@@ -39,13 +42,15 @@ def main():
     maze_w, maze_h = maze_pixel_size(max_width, max_height)
 
     pygame.init()
-    screen = pygame.display.set_mode(
-        (maze_w, maze_h + TOP_SPACE + BOTTOM_SPACE)
-    )
+    screen = pygame.display.set_mode((
+        max(maze_w, MIN_WINDOW_WIDTH),
+        max(maze_h + TOP_SPACE + BOTTOM_SPACE, MIN_WINDOW_HEIGHT),
+    ))
     clock = pygame.time.Clock()
     pygame.display.set_caption("Pacman")
 
-    menu = MainMenu(screen.get_width(), screen.get_height())
+    menu = MainMenu(screen.get_width(), screen.get_height(),
+                    config.highscore_filename)
 
     try:
         spritesheet = pygame.image.load("assets/sprites.png").convert_alpha()
