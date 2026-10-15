@@ -9,6 +9,7 @@ from src.death_end_game import DeathEndGame
 from src.game_stats import GameStats
 from src.name_entry import NameEntry
 from src.parse_entry import ConfigLoader, ConfigError, LevelConfig
+from src.victory_screen import VictoryScreen
 import sys
 import pygame
 
@@ -62,6 +63,7 @@ def main():
     pause_menu = PauseMenu(width, height)
     death_end_game = DeathEndGame(width, height)
     name_entry = NameEntry(width, height)
+    victory_screen = VictoryScreen(width, height)
 
 
     playing = True
@@ -93,6 +95,13 @@ def main():
                 break
             elif level_result == "score saved":
                 break
+        else:
+            # Only reached when no level did 'break': every level was cleared.
+            if victory_screen.run(screen, clock, stats.score) == "quit":
+                playing = False
+            elif name_entry.run(screen, clock, stats.score,
+                                config.highscore_filename) == "quit":
+                playing = False
 
     pygame.quit()
 
