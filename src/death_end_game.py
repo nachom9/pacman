@@ -1,6 +1,7 @@
 import pygame
 
-FONT_PATH = "assets/fonts/PressStart2P-Regular.ttf"
+from src.paths import FONT_PATH
+
 RED = (255, 0, 0)
 WHITE = (255, 255, 255)
 

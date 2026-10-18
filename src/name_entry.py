@@ -1,7 +1,7 @@
 import pygame
+from src.paths import FONT_PATH
 from src.scores import load_scores, save_score
 
-FONT_PATH = "assets/fonts/PressStart2P-Regular.ttf"
 RED = (255, 0, 0)
 WHITE = (255, 255, 255)
 YELLOW = (255, 255, 0)

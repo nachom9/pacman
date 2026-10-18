@@ -6,10 +6,10 @@ install:
 	uv sync
 
 run: install
-	uv run python -m src config.json
+	uv run python pac-man.py config.json
 
 debug: install
-	uv run python -m pdb -m src
+	uv run python -m pdb pac-man.py config.json
 
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +

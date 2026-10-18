@@ -1,15 +1,17 @@
 import pygame
 
+from src.paths import FONT_PATH
+
 class HUD:
     def __init__(self, screen_width, screen_height, spritesheet):
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.font = pygame.font.Font(
-            "assets/fonts/PressStart2P-Regular.ttf",
+            FONT_PATH,
             25
         )
         self.font_small = pygame.font.Font(
-            "assets/fonts/PressStart2P-Regular.ttf",
+            FONT_PATH,
             18
         )
         self.lives_sprite = spritesheet.subsurface(pygame.Rect(595, 601, 24, 26))

@@ -9,6 +9,7 @@ from src.death_end_game import DeathEndGame
 from src.game_stats import GameStats
 from src.name_entry import NameEntry
 from src.parse_entry import ConfigLoader, ConfigError, LevelConfig
+from src.paths import ASSETS_DIR, SPRITES_PATH
 from src.victory_screen import VictoryScreen
 import sys
 import pygame
@@ -49,26 +50,25 @@ def main():
     clock = pygame.time.Clock()
     pygame.display.set_caption("Pacman")
 
-    menu = MainMenu(screen.get_width(), screen.get_height(),
-                    config.highscore_filename)
-
+    # Every screen loads the font when it is created, so they are all built
+    # here: a missing or broken asset gives a clear message, not a traceback.
+    width, height = screen.get_width(), screen.get_height()
     try:
-        spritesheet = pygame.image.load("assets/sprites.png").convert_alpha()
-    except (FileNotFoundError, pygame.error) as e:
+        spritesheet = pygame.image.load(SPRITES_PATH).convert_alpha()
+        menu = MainMenu(width, height, config.highscore_filename)
+        hud = HUD(width, height, spritesheet)
+        pause_menu = PauseMenu(width, height)
+        death_end_game = DeathEndGame(width, height)
+        name_entry = NameEntry(width, height)
+        victory_screen = VictoryScreen(width, height)
+    except (OSError, pygame.error) as e:
         print(
-            f"Error: cannot load 'assets/sprites.png': {e}\n"
-            "Make sure the file exists and run the game from the project root.",
+            f"Error: cannot load the game assets: {e}\n"
+            f"Make sure the '{ASSETS_DIR}' folder is complete.",
             file=sys.stderr,
         )
         pygame.quit()
         sys.exit(1)
-
-    width, height = screen.get_width(), screen.get_height()
-    hud = HUD(width, height, spritesheet)
-    pause_menu = PauseMenu(width, height)
-    death_end_game = DeathEndGame(width, height)
-    name_entry = NameEntry(width, height)
-    victory_screen = VictoryScreen(width, height)
 
 
     playing = True
