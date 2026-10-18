@@ -1,3 +1,5 @@
+"""Read the JSON config file (with # comments) and validate its values."""
+
 import json
 import sys
 from dataclasses import dataclass
@@ -45,6 +47,11 @@ class ConfigLoader:
     """Load the configuration file and keep its validated values."""
 
     def __init__(self, file_path: str) -> None:
+        """Start with the default values of every setting.
+
+        Args:
+            file_path: Path of the config file.
+        """
         self.file_path = file_path
         self.highscore_filename: str = "highscores.json"
         self.lives: int = 3
@@ -56,6 +63,13 @@ class ConfigLoader:
         self.levels: list[LevelConfig] = _default_levels()
 
     def load_config(self) -> None:
+        """Read, parse and validate the config file.
+
+        Invalid or missing values keep their default with a warning.
+
+        Raises:
+            ConfigError: If the file cannot be read or is not valid JSON.
+        """
         text = self._read_text()
         raw = self._parse_json(text)
         self._build_config(raw)
@@ -106,6 +120,7 @@ class ConfigLoader:
         return data
 
     def is_string(self, value: Any, key: str) -> bool:
+        """Return True if value is a non-empty string, else warn."""
         if not isinstance(value, str) or not value.strip():
             print(
                 f"[config] Warning: '{key}' must be a "
@@ -116,6 +131,7 @@ class ConfigLoader:
         return True
 
     def is_number(self, value: Any, key: str) -> bool:
+        """Return True if value is an integer (not a bool), else warn."""
         if not isinstance(value, int) or isinstance(value, bool):
             print(
                 f"[config] Warning: '{key}' must be an integer, "
@@ -126,6 +142,7 @@ class ConfigLoader:
         return True
 
     def _check_levels(self, value: Any) -> None:
+        """Validate the 'levels' list and fill up to MIN_LEVELS levels."""
         if not isinstance(value, list):
             print(
                 "[config] Warning: 'levels' must be a list, "
@@ -165,6 +182,14 @@ class ConfigLoader:
     def _check_size(
         self, level: dict[str, Any], key: str, default: int, name: str
     ) -> int:
+        """Return a valid width or height for a level, clamped to 5-20.
+
+        Args:
+            level: The level object from the config.
+            key: "width" or "height".
+            default: Value used if the key is missing or invalid.
+            name: Name of the level for the warnings, e.g. 'levels[0]'.
+        """
         if key not in level:
             print(
                 f"[config] Warning: '{name}.{key}' is missing, "
@@ -195,7 +220,6 @@ class ConfigLoader:
             )
             return MAX_MAZE_SIZE
         return size
-            
 
     def _build_config(self, raw: dict[str, Any]) -> None:
         """Replace the default values with the valid ones from raw."""

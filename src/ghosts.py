@@ -1,10 +1,33 @@
+"""The ghosts: chase, flee and eaten behaviours and BFS path finding."""
+
+from typing import TYPE_CHECKING, Any, Optional
+
 import pygame
+
+if TYPE_CHECKING:
+    # Only for the type hints: a normal import would be circular
+    # (pacman.py imports ghosts.py too).
+    from src.pacman import Pacman
 
 CELL_SIZE = 54
 CENTER_OFFSET = 15
 
+
 class Ghost:
-    def __init__(self, size, maze, color, walls):
+    """One of the 4 ghosts. Each colour chases Pac-Man in its own way."""
+
+    def __init__(
+        self, size: tuple[int, int], maze: list[list[int]], color: str,
+        walls: list[pygame.Rect],
+    ) -> None:
+        """Place the ghost in its corner.
+
+        Args:
+            size: Maze size in cells, as (width, height).
+            maze: Maze from the generator, maze[row][col].
+            color: "red", "pink", "blue" or "orange".
+            walls: Rects of every wall of the maze.
+        """
         if color == "red":
             self.starting_cell = (0, 0)
             self.x = CENTER_OFFSET
@@ -51,17 +74,24 @@ class Ghost:
         self.frame = '0'
         self.maze = maze
         self.rect = pygame.Rect(self.x, self.y, 34, 33)
-        self.sprites = []
         self.mode = 'chase'
         self.fleeing = "blue"
         self.flee_timer = 0
         self.eaten_timer = 0
         self.walls = walls
         self.frozen = False
+        # Sprite to draw, chosen by the level every frame.
+        self.surface: pygame.Surface
 
     @staticmethod
-    def get_sprites():
-        ghosts = {
+    def get_sprites() -> dict[str, Any]:
+        """Return the position of every ghost sprite in the spritesheet.
+
+        Returns:
+            sprites[color][direction][frame], sprites["fleeing"][colour]
+            [frame] and sprites["eaten"][direction], as [x, y, w, h].
+        """
+        ghosts: dict[str, Any] = {
             "red": {
                 "right": {},
                 "down": {},
@@ -90,7 +120,7 @@ class Ghost:
                 "blue": {},
                 "grey": {},
             },
-            "eaten":  {
+            "eaten": {
                 "right": {},
                 "down": {},
                 "left": {},
@@ -124,13 +154,33 @@ class Ghost:
             else:
                 for direction in directions:
                     for frame in frames:
-                        ghosts[ghost][direction][frame] = [x, y, width, height]
+                        ghosts[ghost][direction][frame] = [x, y, width,
+                                                           height]
                         y += 50
                 y = 4
                 x += +50
         return ghosts
 
-    def set_behaviour(self, pacman, direction, red_ghost_cell, clock, points_per_ghost):
+    def set_behaviour(
+        self, pacman: "Pacman", direction: str,
+        red_ghost_cell: tuple[int, int], clock: int, points_per_ghost: int,
+    ) -> None:
+        """Update the ghost for this frame.
+
+        Fleeing ghosts can be eaten, eaten ghosts go back to their corner,
+        and chasing ghosts kill Pac-Man (unless cheat mode is on) and move
+        towards a target cell that depends on their colour:
+        red goes to Pac-Man, pink 4 cells in front of him, orange 4 cells
+        behind him, and blue to the red ghost mirrored over the cell 2 in
+        front of him.
+
+        Args:
+            pacman: The player.
+            direction: Direction Pac-Man is moving to.
+            red_ghost_cell: Cell of the red ghost (used by the blue one).
+            clock: Milliseconds since the last frame.
+            points_per_ghost: Points for eating a ghost.
+        """
         if not pacman.movement:
             return
         if self.mode == 'flee':
@@ -147,9 +197,9 @@ class Ghost:
         else:
             self.speed = 2
         if (pacman.rect.colliderect(self.rect) and
-            self.mode == "chase" and
-            pacman.cell == self.cell and
-            not pacman.stats.cheat_mode):
+                self.mode == "chase" and
+                pacman.cell == self.cell and
+                not pacman.stats.cheat_mode):
             pacman.state = "dying"
         if self.color == 'red':
             target_cell = pacman.cell
@@ -225,23 +275,28 @@ class Ghost:
 
         self.move(target_cell)
 
-    def is_centered(self):
+    def is_centered(self) -> bool:
+        """Return True if the ghost is exactly in the middle of a cell."""
         return ((self.y - CENTER_OFFSET) % CELL_SIZE == 0 and
                 (self.x - CENTER_OFFSET) % CELL_SIZE == 0)
 
+    def move(self, target_cell: tuple[int, int]) -> None:
+        """Move one step towards target_cell (nothing if frozen).
 
-    def move(self, target_cell):
+        A new direction is only chosen in the middle of a cell, then the
+        ghost walks to the next cell centre without overshooting it.
+        """
         if self.frozen:
             return
         if abs((self.prev_x - self.x)) + abs((self.prev_y - self.y)) > 4:
             self.change_animation()
 
         self.cell = ((self.y - CENTER_OFFSET + CELL_SIZE // 2) // CELL_SIZE,
-                    (self.x - CENTER_OFFSET + CELL_SIZE // 2) // CELL_SIZE)
+                     (self.x - CENTER_OFFSET + CELL_SIZE // 2) // CELL_SIZE)
 
         if self.is_centered():
             next_step = self.path_finding(target_cell)
-            if next_step == None:
+            if next_step is None:
                 return
             self.movement = next_step
             self.direction = next_step
@@ -264,8 +319,19 @@ class Ghost:
         self.rect.x = self.x
         self.rect.y = self.y
 
-    def get_neighbors(self, current, c):
-        neighbors = []
+    def get_neighbors(
+        self, current: tuple[int, int], c: int
+    ) -> list[list[Any]]:
+        """Return the cells reachable from current, with the move to them.
+
+        Args:
+            current: (row, col) of the cell.
+            c: Wall bits of the cell (1 up, 2 right, 4 down, 8 left).
+
+        Returns:
+            A list of [(row, col), move] pairs.
+        """
+        neighbors: list[list[Any]] = []
         row, col = current
         last_row = len(self.maze) - 1
         last_col = len(self.maze[0]) - 1
@@ -296,10 +362,17 @@ class Ghost:
 
         return neighbors
 
-    def path_finding(self, target_cell):
+    def path_finding(self, target_cell: tuple[int, int]) -> Optional[str]:
+        """Find the first move of the shortest path to target_cell (BFS).
+
+        Returns:
+            "left", "right", "up" or "down", or None if the ghost is
+            already there or the target cannot be reached.
+        """
         if self.cell == target_cell:
             return None
-        visited = {self.cell: None}
+        # For each visited cell: [cell we came from, move used] (or None).
+        visited: dict[tuple[int, int], Any] = {self.cell: None}
         queue = [self.cell]
 
         while queue:
@@ -320,8 +393,8 @@ class Ghost:
         if target_cell not in visited:
             return None
 
-        path = []
-        steps = []
+        path: list[tuple[int, int]] = []
+        steps: list[str] = []
         current = target_cell
 
         while current != self.cell:
@@ -339,7 +412,8 @@ class Ghost:
 
         return None
 
-    def change_animation(self):
+    def change_animation(self) -> None:
+        """Switch between the 2 frames of the ghost sprite."""
         self.prev_x = self.x
         self.prev_y = self.y
 
@@ -348,7 +422,8 @@ class Ghost:
         else:
             self.frame = '0'
 
-    def eaten_flee(self, clock, pacman):
+    def eaten_flee(self, clock: int, pacman: "Pacman") -> None:
+        """Go back to the corner fast, then chase again after 6 seconds."""
         if self.eaten_timer == 0:
             self.speed = 4
             self.flee_timer = 0
@@ -363,31 +438,24 @@ class Ghost:
             self.mode = "chase"
             self.eaten_timer = 0
 
+    def flee(self, clock: int, pacman: "Pacman") -> None:
+        """Run slowly to the corner while edible, for 6 seconds.
 
-    def flee(self, clock, pacman):
+        During the last 2.25 seconds the ghost blinks blue/grey to warn
+        that it is about to stop being edible.
+        """
         self.speed = 1
         self.move(self.starting_cell)
         self.flee_timer += clock
         if self.flee_timer < 3750:
             self.fleeing = "blue"
-        if 3750 <= self.flee_timer < 4000:
-            self.fleeing = "grey"
-        if 4000 <= self.flee_timer < 4250:
-            self.fleeing = "blue"
-        if 4250 <= self.flee_timer < 4500:
-            self.fleeing = "grey"
-        if 4500 <= self.flee_timer < 4750:
-            self.fleeing = "blue"
-        if 4750 <= self.flee_timer < 5000:
-            self.fleeing = "grey"
-        if 5000 <= self.flee_timer < 5250:
-            self.fleeing = "blue"
-        if 5250 <= self.flee_timer < 5500:
-            self.fleeing = "grey"
-        if 5500 <= self.flee_timer < 5750:
-            self.fleeing = "blue"
-        if 5750 <= self.flee_timer < 6000:
-            self.fleeing = "grey"
-        if self.flee_timer >= 6000:
+        elif self.flee_timer < 6000:
+            # Blink every 250 ms: grey, blue, grey...
+            blink = (self.flee_timer - 3750) // 250
+            if blink % 2 == 0:
+                self.fleeing = "grey"
+            else:
+                self.fleeing = "blue"
+        else:
             self.flee_timer = 0
             pacman.brave_reset += 1

@@ -1,3 +1,5 @@
+"""Instructions screen: controls and rules of the game."""
+
 import pygame
 
 from src.paths import FONT_PATH

@@ -12,6 +12,12 @@ class VictoryScreen:
     """Congratulate the player and show the final score."""
 
     def __init__(self, screen_width: int, screen_height: int) -> None:
+        """Load the fonts used by the screen.
+
+        Args:
+            screen_width: Width of the window in pixels.
+            screen_height: Height of the window in pixels.
+        """
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.font = pygame.font.Font(FONT_PATH, 50)
@@ -56,6 +62,17 @@ class VictoryScreen:
     def run(
         self, screen: pygame.Surface, clock: pygame.time.Clock, score: int
     ) -> str:
+        """Show the screen until the player presses Space.
+
+        Args:
+            screen: Window surface to draw on.
+            clock: Clock used to limit the frame rate.
+            score: Final score of the game.
+
+        Returns:
+            "continue" when Space is pressed, "quit" if the window is
+            closed.
+        """
         self.timer = 0
         while True:
             for event in pygame.event.get():

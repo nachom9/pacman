@@ -1,3 +1,5 @@
+"""Pause menu shown on top of the game."""
+
 import pygame
 
 from src.paths import FONT_PATH
@@ -8,22 +10,39 @@ YELLOW = (255, 255, 0)
 
 
 class PauseMenu:
-    def __init__(self, screen_width, screen_height):
+    """Pause the game: resume it or go back to the main menu."""
+
+    def __init__(self, screen_width: int, screen_height: int) -> None:
+        """Load the fonts used by the menu.
+
+        Args:
+            screen_width: Width of the window in pixels.
+            screen_height: Height of the window in pixels.
+        """
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.font = pygame.font.Font(FONT_PATH, 50)
         self.font_small = pygame.font.Font(FONT_PATH, 25)
 
-    def draw(self, screen):
+    def draw(self, screen: pygame.Surface) -> None:
+        """Draw the menu over the current game image.
+
+        Each text has a black box behind it, so it reads over the maze.
+        """
         center_x = self.screen_width // 2
 
         pause_text = self.font.render("PAUSED", False, WHITE)
-        pause_rect = pause_text.get_rect(center=(center_x, self.screen_height // 4))
+        pause_rect = pause_text.get_rect(center=(center_x,
+                                                 self.screen_height // 4))
         pygame.draw.rect(screen, BLACK, pause_rect.inflate(30, 20))
         screen.blit(pause_text, pause_rect)
 
-        pause_instructions = self.font_small.render("Press P or ESC to Resume", False, WHITE)
-        instructions_rect = pause_instructions.get_rect(center=(center_x, self.screen_height // 2))
+        pause_instructions = self.font_small.render(
+            "Press P or ESC to Resume", False, WHITE
+        )
+        instructions_rect = pause_instructions.get_rect(
+            center=(center_x, self.screen_height // 2)
+        )
         pygame.draw.rect(screen, BLACK, instructions_rect.inflate(30, 20))
         screen.blit(pause_instructions, instructions_rect)
 

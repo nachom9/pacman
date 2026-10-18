@@ -19,8 +19,10 @@ MAZE_BORDER = 10
 TOP_SPACE = 100
 BOTTOM_SPACE = 60
 
+
 class LevelError(Exception):
     """Custom exception for level-related errors."""
+
 
 def maze_pixel_size(width: int, height: int) -> tuple[int, int]:
     """Return the size in pixels of a maze of width x height cells."""
@@ -54,6 +56,8 @@ class Level:
             spritesheet: Image with all the sprites.
             hud: HUD drawn on top of the game.
             pause_menu: Menu shown when the player pauses.
+            death_end_game: Game Over screen.
+            name_entry: Screen to type the name for the highscores.
             level_config: Maze size of this level.
             number: Level number shown in the HUD (starts at 1).
             seed: Maze seed. 0 means a random maze.
@@ -94,7 +98,8 @@ class Level:
         self.drawn_maze = DrawnMaze(size=self.size, cells=self.maze)
         self.map_surface = self.drawn_maze.draw_map()
 
-        self.pacman = Pacman(self.size, self.maze, self.drawn_maze.walls, self.stats)
+        self.pacman = Pacman(self.size, self.maze, self.drawn_maze.walls,
+                             self.stats)
         self.ghosts = [
             Ghost(self.size, self.maze, "red", self.drawn_maze.walls),
             Ghost(self.size, self.maze, "pink", self.drawn_maze.walls),
@@ -114,7 +119,10 @@ class Level:
         """Play the level until it ends.
 
         Returns:
-            "quit" if the player closed the window or quit from pause.
+            "cleared" when every pacgum is eaten (or skipped in cheat
+            mode), "menu" if the player left from the pause menu,
+            "score saved" after a game over and the name entry, or
+            "quit" if the window was closed.
         """
         pacman = self.pacman
         ghosts = self.ghosts
@@ -160,13 +168,7 @@ class Level:
                                         ghosts[0].cell,
                                         timer,
                                         self.config.points_per_ghost)
-                    sprite = self.ghosts_sprites[ghost.color][ghost.direction][ghost.frame]
-                    if ghost.mode == 'chase':
-                        ghost.surface = self.spritesheet.subsurface(pygame.Rect(sprite))
-                    elif ghost.mode == 'flee':
-                        ghost.surface = self.spritesheet.subsurface(pygame.Rect(self.ghosts_sprites['fleeing'][ghost.fleeing][ghost.frame]))
-                    elif ghost.mode == 'eaten':
-                        ghost.surface = self.spritesheet.subsurface(pygame.Rect(self.ghosts_sprites['eaten'][ghost.direction]))
+                    self._update_ghost_surface(ghost)
                 moved = (abs(pacman.prev_x - pacman.x)
                          + abs(pacman.prev_y - pacman.y))
                 if moved > 4:
@@ -192,11 +194,10 @@ class Level:
                                                            self.clock,
                                                            self.stats.score)
                     if death_result == "continue":
-                        continue_result = self.name_entry.run(self.screen,
-                                                              self.clock,
-                                                              self.stats.score,
-                                                              self.config.highscore_filename)
-                        return continue_result
+                        return self.name_entry.run(
+                            self.screen, self.clock, self.stats.score,
+                            self.config.highscore_filename,
+                        )
                     return "quit"
 
             self._draw(pacman_surface, time.get_elapsed_time())
@@ -204,6 +205,19 @@ class Level:
             if self.drawn_maze.win_check:
                 return "cleared"
             timer = self.clock.tick(60)
+
+    def _update_ghost_surface(self, ghost: Ghost) -> None:
+        """Pick the ghost sprite for its mode, direction and frame."""
+        sprites = self.ghosts_sprites
+        if ghost.mode == 'chase':
+            rect = sprites[ghost.color][ghost.direction][ghost.frame]
+        elif ghost.mode == 'flee':
+            rect = sprites['fleeing'][ghost.fleeing][ghost.frame]
+        elif ghost.mode == 'eaten':
+            rect = sprites['eaten'][ghost.direction]
+        else:
+            return
+        ghost.surface = self.spritesheet.subsurface(pygame.Rect(rect))
 
     def _draw(self, pacman_surface: pygame.Surface, elapsed: int) -> None:
         """Draw the maze, the characters and the HUD on the screen."""

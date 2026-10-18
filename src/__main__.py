@@ -1,22 +1,26 @@
 #!/usr/bin/env python3
+"""Game entry point: menu, levels, game over / victory and highscores."""
 
+import sys
+
+import pygame
+
+from src.death_end_game import DeathEndGame
+from src.game_stats import GameStats
 from src.hud import HUD
 from src.level import BOTTOM_SPACE, TOP_SPACE, Level, LevelError
 from src.level import maze_pixel_size
 from src.main_menu import MainMenu
-from src.pause_menu import PauseMenu
-from src.death_end_game import DeathEndGame
-from src.game_stats import GameStats
 from src.name_entry import NameEntry
-from src.parse_entry import ConfigLoader, ConfigError, LevelConfig
+from src.parse_entry import ConfigLoader, ConfigError
 from src.paths import ASSETS_DIR, SPRITES_PATH
+from src.pause_menu import PauseMenu
 from src.victory_screen import VictoryScreen
-import sys
-import pygame
 
-# Minimo para que quepa pantalla de inicio e intrucciones.
+# Smallest window where the main menu and the instructions still fit.
 MIN_WINDOW_WIDTH = 640
 MIN_WINDOW_HEIGHT = 900
+
 
 def check_arguments() -> str:
     """Return the config path given on the command line, or exit."""
@@ -30,7 +34,11 @@ def check_arguments() -> str:
     return sys.argv[1]
 
 
-def main():
+def main() -> None:
+    """Load the config, open the window and run the game loop.
+
+    Main menu > levels > game over or victory > name entry > main menu.
+    """
     file_path = check_arguments()
     config = ConfigLoader(file_path)
     try:
@@ -70,7 +78,6 @@ def main():
         pygame.quit()
         sys.exit(1)
 
-
     playing = True
     while playing:
         if menu.run(screen, clock) == "quit":
@@ -79,7 +86,7 @@ def main():
         first = True
         stats = GameStats(config.lives)
         for index, level_config in enumerate(config.levels):
-            if first == True:
+            if first:
                 seed = config.seed
                 first = False
             else:
@@ -87,8 +94,8 @@ def main():
             try:
                 level = Level(
                         screen, clock, spritesheet, hud, pause_menu,
-                        death_end_game, name_entry, level_config, index + 1, seed,
-                        config.level_max_time, config, stats
+                        death_end_game, name_entry, level_config, index + 1,
+                        seed, config.level_max_time, config, stats
                     )
             except LevelError as e:
                 print(f"Error: {e}", file=sys.stderr)
@@ -99,7 +106,8 @@ def main():
                 playing = False
                 break
             elif level_result in ("score saved", "menu"):
-                # Game over, or the player left from the pause menu: back to the main menu
+                # Game over, or the player left from the pause menu:
+                # back to the main menu
                 break
         else:
             # Only reached when no level did 'break': every level was cleared.

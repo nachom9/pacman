@@ -1,3 +1,7 @@
+"""Main menu: start, instructions, quit and the top 10 highscores."""
+
+from typing import Any
+
 import pygame
 
 from src.instructions_menu import InstructionsMenu
@@ -9,14 +13,22 @@ YELLOW = (255, 255, 0)
 
 
 class MainMenu:
+    """First screen of the game."""
 
     def __init__(
         self, screen_width: int, screen_height: int, scores_file_name: str
     ) -> None:
+        """Load the fonts and create the instructions screen.
+
+        Args:
+            screen_width: Width of the window in pixels.
+            screen_height: Height of the window in pixels.
+            scores_file_name: Path of the highscores JSON file.
+        """
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.scores_file_name = scores_file_name
-        self.scores: list[dict] = []
+        self.scores: list[dict[str, Any]] = []
         self.title_font = pygame.font.Font(FONT_PATH, 60)
         self.font = pygame.font.Font(FONT_PATH, 20)
         self.instructions = InstructionsMenu(screen_width, screen_height)
@@ -29,11 +41,13 @@ class MainMenu:
         color: tuple[int, int, int],
         y: int,
     ) -> None:
+        """Draw a text centered horizontally at height y."""
         rendered = font.render(text, False, color)
         center_x = self.screen_width // 2
         screen.blit(rendered, rendered.get_rect(center=(center_x, y)))
 
     def draw(self, screen: pygame.Surface) -> None:
+        """Draw the title, the controls and the highscores."""
         screen.fill((0, 0, 0))
 
         self._draw_centered(screen, "PACMAN", self.title_font, YELLOW, 120)
@@ -58,6 +72,11 @@ class MainMenu:
             y += 35
 
     def run(self, screen: pygame.Surface, clock: pygame.time.Clock) -> str:
+        """Show the menu until the player starts a game or quits.
+
+        Returns:
+            "play" (Space) or "quit" (ESC or window closed).
+        """
         # Read the file once each time the menu opens (not on every frame),
         # so a score saved at the end of a game shows up straight away.
         self.scores = load_scores(self.scores_file_name)
