@@ -8,7 +8,7 @@ from src.draw_maze import DrawnMaze
 from src.game_stats import GameStats
 
 
-# Sirve para ver los tipos, el if solo hace el import para comprobar tipos.
+# Used when checking types, import of Ghost.
 if TYPE_CHECKING:
     from src.ghosts import Ghost
 
