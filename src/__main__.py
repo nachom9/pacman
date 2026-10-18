@@ -98,7 +98,8 @@ def main():
             if level_result == "quit":
                 playing = False
                 break
-            elif level_result == "score saved":
+            elif level_result in ("score saved", "menu"):
+                # Game over, or the player left from the pause menu: back to the main menu
                 break
         else:
             # Only reached when no level did 'break': every level was cleared.

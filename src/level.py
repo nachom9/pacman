@@ -130,8 +130,8 @@ class Level:
                     if event.key == pygame.K_ESCAPE:
                         pause_start = pygame.time.get_ticks()
                         result = self.pause_menu.run(self.screen, self.clock)
-                        if result == "quit":
-                            return "quit"
+                        if result in ("quit", "menu"):
+                            return result
                         time.pause(pygame.time.get_ticks() - pause_start)
                     elif event.key == pygame.K_c:
                         pacman.change_cheat_mode()

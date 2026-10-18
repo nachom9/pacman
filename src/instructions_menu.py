@@ -8,7 +8,8 @@ YELLOW = (255, 255, 0)
 CONTROLS = [
     "ARROWS  Move",
     "ESC     Pause",
-    "P       Resume",
+    "P/ESC   Resume (pause)",
+    "M       Main menu (pause)",
     "C       Cheat mode",
     "N       Skip level (cheat)",
     "F       Freeze ghosts (cheat)",
@@ -62,7 +63,7 @@ class InstructionsMenu:
         for line in LINES:
             text = self.font_small.render(line, False, WHITE)
             screen.blit(text, text.get_rect(center=(center_x, y)))
-            y += 40
+            y += 35
 
         back = self.font_small.render("Press ESC to go back", False, YELLOW)
         screen.blit(
