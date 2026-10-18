@@ -188,7 +188,9 @@ class Level:
                     pacman.reset_round(ghosts, self.maze)
                     time = Time()
                 else:
-                    death_result = self.death_end_game.run(self.screen, self.clock)
+                    death_result = self.death_end_game.run(self.screen,
+                                                           self.clock,
+                                                           self.stats.score)
                     if death_result == "continue":
                         continue_result = self.name_entry.run(self.screen,
                                                               self.clock,

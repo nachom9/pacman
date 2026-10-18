@@ -18,20 +18,25 @@ class DeathEndGame:
             return True
         return False
 
-    def draw(self, screen):
+    def draw(self, screen, score):
         center_x = self.screen_width // 2
 
         screen.fill((0, 0, 0))
         death_text = self.font.render("GAME OVER", False, RED)
-        death_rect = death_text.get_rect(center=(center_x, self.screen_height // 2 - 60))
+        death_rect = death_text.get_rect(center=(center_x, self.screen_height // 2 - 80))
         screen.blit(death_text, death_rect)
+
+        score_text = self.font_small.render(f"Final score: {score}", False, WHITE)
+        score_rect = score_text.get_rect(center=(center_x, self.screen_height // 2))
+        screen.blit(score_text, score_rect)
 
         if self.blink():
             death_instructions = self.font_small.render("Press Space to Continue", False, WHITE)
-            death_instructions_rect = death_instructions.get_rect(center=(center_x, self.screen_height // 2 + 20))
+            death_instructions_rect = death_instructions.get_rect(center=(center_x, self.screen_height // 2 + 80))
             screen.blit(death_instructions, death_instructions_rect)
 
-    def run(self, screen, clock):
+    def run(self, screen, clock, score):
+        self.timer = 0
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -40,6 +45,6 @@ class DeathEndGame:
                     if event.key == pygame.K_SPACE:
                         return "continue"
 
-            self.draw(screen)
+            self.draw(screen, score)
             pygame.display.flip()
             self.timer += clock.tick(60)
