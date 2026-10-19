@@ -401,15 +401,10 @@ decisions.
 
 - 📘 [pygame documentation](https://www.pygame.org/docs/) — display, events,
   drawing, fonts and sprites.
-- 👻 [The Pac-Man Dossier](https://pacman.holenet.info/) and
-  [Understanding Pac-Man Ghost Behavior](https://gameinternals.com/understanding-pac-man-ghost-behavior)
-  — how the original ghosts choose their target (chase, ambush, flank).
 - 🧭 [Breadth-first search (Wikipedia)](https://en.wikipedia.org/wiki/Breadth-first_search)
   — the ghosts' path finding.
-- 🧹 [PEP 8](https://peps.python.org/pep-0008/) and
-  [PEP 257](https://peps.python.org/pep-0257/) — code style and docstrings;
-  [flake8](https://flake8.pycqa.org/) and [mypy](https://mypy.readthedocs.io/)
-  documentation.
+- 🧹 [flake8](https://flake8.pycqa.org/) and [mypy](https://mypy.readthedocs.io/)
+  documentation — code style and type checking.
 - 📦 [uv documentation](https://docs.astral.sh/uv/) — dependencies and virtual
   environment.
 - 🔤 Font: [Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P)
