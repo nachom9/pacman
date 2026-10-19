@@ -1,4 +1,4 @@
-.PHONY: all install run debug clean lint lint-strict
+.PHONY: all install run debug clean lint lint-strict package
 
 all: run
 
@@ -22,3 +22,6 @@ lint: install
 lint-strict: install
 	uv run python -m flake8 .
 	uv run python -m mypy . --strict
+
+package: install
+	uv run pyinstaller --clean --name Pacman --onedir --add-data "assets:assets" pac-man.py
