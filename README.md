@@ -414,7 +414,9 @@ decisions.
   environment.
 - 🔤 Font: [Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P)
   (SIL Open Font License).
-- 🎨 Sprites: TODO (where `assets/sprites.png` comes from).
+- 🎨 Sprites: Pac-Man arcade sprite sheet found online with a Google image
+  search (original graphics © Bandai Namco), used for educational purposes
+  only.
 
 ### 🤖 Use of AI
 

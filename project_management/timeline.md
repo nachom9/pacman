@@ -97,9 +97,4 @@ What the history shows:
 | Item | Why it matters |
 |------|----------------|
 | **Packaging script/spec at the repository root and deployment to Steam / Itch.io** | Required by the subject (chapter VII); nothing in the repository yet |
-| README: "Project Management" section and the origin of `assets/sprites.png` are still `TODO` | Required README content |
-| `config.json` last level is 20x22 but the maximum is 20 | The game prints a warning on every start; the README example shows 20x20. Change one of them |
-| `test_sizes.json` in the repository root | Leftover test file: remove it, or say in the README what it is for |
-| Manual pass of the test plan (`test_plan.md`) | Most gameplay and UI checks are still `TO TEST` |
-| Run `make lint` in the uv environment | The checks in `test_plan.md` ran without `pygame` installed |
 | Peer-review preparation: everyone must be able to explain every module (recode exercise) | See `risks.md` |
