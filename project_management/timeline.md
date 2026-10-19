@@ -2,12 +2,50 @@
 
 Source of truth for the real dates: the git history of the repository
 (68 commits, 17 Sep - 18 Oct 2026, branches `main`, `ghosts-flee`, `nacho`,
-`screens`). Check with `git log --date=short`.
+`screens` and `final-fixes`). Check with `git log --date=short`.
 
 ## Tools
 
 - **Git / GitHub** (`nachom9/pacman`): one branch per area of work at the
   beginning (`ghosts-flee`, `screens`, `nacho`), merged into `main`.
+  `screens` was deleted on 19 Oct once merged; the last fixes are done in
+  `final-fixes` so that `main` is only updated with finished work.
+
+## Gantt chart
+
+Each bar is one phase of the table below, from its first to its last day in
+git, grouped by the member who mainly did it.
+
+```mermaid
+gantt
+    title Pac-Man project (dates from git)
+    dateFormat YYYY-MM-DD
+    axisFormat %d %b
+
+    section imelero-
+    Maze, sprites, Pac-Man movement, pacgums      :done, 2026-09-17, 7d
+    Ghosts and BFS path finding                   :done, 2026-09-28, 4d
+    Super-pacgums, death animation, level reset   :done, 2026-10-06, 1d
+    Collision system, ghost alignment fix         :done, 2026-10-07, 1d
+    Flee and eaten modes, ghost movement rewrite  :crit, done, 2026-10-09, 2d
+    Game over and name entry screens              :done, 2026-10-10, 1d
+    Points per ghost, new main loop               :done, 2026-10-13, 1d
+    Cheat mode, lives from config, hitbox fix     :done, 2026-10-14, 1d
+
+    section dvallada
+    HUD and arcade font                           :done, 2026-09-28, 1d
+    Main, pause and instructions menus            :done, 2026-09-30, 2d
+    Tooling (uv, Makefile, flake8, mypy)          :done, 2026-10-01, 1d
+    Config loader, Level class, one level per entry :done, 2026-10-07, 2d
+    Multi-size levels, GameStats, victory, time limit :done, 2026-10-15, 1d
+    Entry point, asset paths, lint clean, README  :done, 2026-10-18, 1d
+
+    section Both
+    Project management documents                  :active, 2026-10-19, 1d
+```
+
+The red bar is the ghost movement rewrite, the main blocker of the project
+(`blockers.md`, section 1).
 
 ## What was done and when
 
@@ -29,16 +67,20 @@ Source of truth for the real dates: the git history of the repository
 | 14 | Entry point `pac-man.py`, asset paths independent of the working directory, pause -> main menu, final score on game over, `flake8` and `mypy --strict` clean, README | 18 Oct | dvallada |
 | 15 | Project management documents | 19 Oct | both |
 
-## Planned vs. actual
+## Milestones
 
-| Milestone | Planned | Actual |
-|-----------|---------|--------|
-| Playable maze with Pac-Man and ghosts | 1 Oct | 1 Oct |
-| Config file and several levels | 7 Oct | 7 Oct |
-| Highscores, game over, name entry, loop back to the menu | 12 Oct | 13 Oct |
-| Cheat mode | 14 Oct | 14-15 Oct |
-| Victory screen, time limit, lint clean | 17 Oct | 15-18 Oct |
-| Packaging and deployment | [TO FILL] | **not done yet** |
+We did not set deadlines in advance. We worked feature by feature, using
+the subject as a checklist, and agreed on the next steps in our meetings.
+The table shows when each milestone was actually reached, according to git.
+
+| Milestone | Reached |
+|-----------|---------|
+| Playable maze with Pac-Man and ghosts | 1 Oct |
+| Config file and several levels | 7 Oct |
+| Highscores, game over, name entry, loop back to the menu | 13 Oct |
+| Cheat mode | 14-15 Oct |
+| Victory screen, time limit, lint clean | 15-18 Oct |
+| Packaging and deployment | **not done yet** |
 
 What the history shows:
 

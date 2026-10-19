@@ -90,3 +90,46 @@ happened and can be checked in the commits.
   file raised `FileNotFoundError`.
 - **Solution:** `load_scores` catches read errors and returns an empty list,
   so the first save creates the file.
+
+## 8. Score and lives lost between levels (15 Oct)
+
+- **Symptom:** after clearing level 1, level 2 started with 0 points and
+  full lives, and clearing the last level went straight back to the menu,
+  with no victory screen and no chance to save the score.
+- **Cause:** every `Level` creates its own `Pacman`, and the score and the
+  lives were attributes of `Pacman`, so they were lost with each level. The
+  code had been written for a single level.
+- **Solution:** a `GameStats` object (score, lives, later the cheat flags)
+  is created once per game in `main()` and passed to every level; `Pacman`,
+  the ghosts and the HUD use it. The level loop got a `for ... else` so the
+  victory screen and the name entry run only when every level is cleared.
+  Commit `multi-size levels fixes + ... (GameStats)`.
+- **Check:** three levels in a row with points and a life lost in each one:
+  the totals carry over, and a new game starts again from zero.
+
+## 9. Menus cut off with small mazes (15 Oct)
+
+- **Symptom:** with a config where every level is small (for example all
+  5x5) the window was 280 px wide: the titles, the instructions and the
+  end screens were cut off and overlapped.
+- **Cause:** the window size came only from the largest maze, but the menus
+  need a fixed amount of space.
+- **Solution:** a minimum window size (640x900, measured from the widest
+  text and the tallest screen); the maze is centred in the window. Commit
+  `min window size + ...`.
+
+## 10. The game crashed when launched from another folder (18 Oct)
+
+- **Symptom:** `python3 /path/to/pac-man.py config.json` from any folder
+  other than the project root ended in a traceback
+  (`FileNotFoundError` for the font).
+- **Cause:** the asset paths were relative (`"assets/fonts/..."`), so they
+  were looked up from the folder where the command was run. Only the sprite
+  sheet was inside a `try`; the font was loaded by 7 screens without one.
+- **Solution:** `src/paths.py` builds absolute paths from its own location,
+  and every screen that loads the font is created inside the same `try`
+  as the sprite sheet, with a clear error message. This is also needed for
+  the packaged game, where the assets are not in the current folder.
+  Commit `pac-man.py entry point + absolute asset paths ...`.
+- **Check:** launched from `/tmp`, and from copies of the project without
+  the font and with a broken sprite sheet: clear message, no traceback.
