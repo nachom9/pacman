@@ -372,9 +372,28 @@ player chose.
 
 ## Project Management
 
-TODO: short overview of how the project was managed (method, tools, how the
-work was split, how decisions were taken), with a link to the project
-management folder, e.g. [`project_management/`](project_management/).
+We are a team of two and worked **feature by feature**, using the subject as
+our checklist. Decisions were taken together in person, and we kept in touch
+every day by chat to share progress, split the next tasks and take quick
+decisions.
+
+- **Work split:** `imelero-` built the maze drawing, Pac-Man, the four ghosts
+  and the game over / name entry screens; `dvallada` built the HUD, the
+  menus, the tooling (uv, Makefile, flake8, mypy), the config loader, the
+  `Level` class, the multi-level game and the documentation. Files touched by
+  both are reviewed by both, so each of us can explain the whole code.
+- **Git workflow:** one branch per area of work (`ghosts-flee`, `screens`,
+  `nacho`, `final-fixes`), merged into `main` when finished.
+- **Follow-up:** progress, milestones, risks, tests and blocking problems are
+  tracked in the [`project_management/`](project_management/) folder:
+
+| Document | Content |
+|---|---|
+| [`timeline.md`](project_management/timeline.md) | Gantt chart, what was done and when (from git), milestones, open items |
+| [`decisions.md`](project_management/decisions.md) | Team organisation and the main technical decisions, with their reasons |
+| [`risks.md`](project_management/risks.md) | Risk analysis: probability, impact, mitigation and status |
+| [`test_plan.md`](project_management/test_plan.md) | Acceptance test plan and results |
+| [`blockers.md`](project_management/blockers.md) | Blocking problems: symptom, cause, solution and how it was checked |
 
 ---
 

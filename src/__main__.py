@@ -34,7 +34,7 @@ def check_arguments() -> str:
     return sys.argv[1]
 
 
-def main() -> None:
+def _run_game() -> None:
     """Load the config, open the window and run the game loop.
 
     Main menu > levels > game over or victory > name entry > main menu.
@@ -118,6 +118,16 @@ def main() -> None:
                 playing = False
 
     pygame.quit()
+
+
+def main() -> None:
+    """Run the game; Ctrl+C in the terminal closes it cleanly."""
+    try:
+        _run_game()
+    except KeyboardInterrupt:
+        print("\nGame interrupted.", file=sys.stderr)
+        pygame.quit()
+        sys.exit(130)
 
 
 if __name__ == "__main__":
