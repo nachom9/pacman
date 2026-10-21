@@ -24,6 +24,7 @@ top 10.
 <img src="docs/images/gameplay.gif" width="410" alt="Gameplay: Pac-Man eats a super-pacgum and the ghosts flee">
 
 [Description](#description) •
+[Play it](#-play-the-packaged-game-linux) •
 [Instructions](#instructions) •
 [Configuration](#configuration) •
 [Highscore](#highscore) •
@@ -73,13 +74,45 @@ object-oriented architecture:
 
 ## Instructions
 
-### Requirements
+### 🎮 Play the packaged game (Linux)
+
+The game is published on **itch.io** as a free, password-protected build:
+**[nacho-42.itch.io/pacman-42](https://nacho-42.itch.io/pacman-42)** (ask us
+for the password). No Python installation is needed.
+
+1. Download `Pacman-linux.zip` and unzip it.
+2. Open a terminal in the `Pacman` folder and run:
+
+   ```bash
+   ./Pacman config.json
+   ```
+
+The folder includes a ready-to-use `config.json` and `HOW_TO_PLAY.txt`
+(controls, cheat keys and configuration options).
+
+### Build the package yourself
+
+```bash
+make package        # creates dist/Pacman/ and dist/Pacman-linux.zip
+./dist/Pacman/Pacman config.json
+```
+
+`make package` runs **PyInstaller** with the spec file at the root of the
+repository, [`Pacman.spec`](Pacman.spec): it bundles a Python interpreter,
+pygame, the maze generator, the source code and `assets/` into
+`dist/Pacman/`. Then it copies `config.json` and
+[`HOW_TO_PLAY.txt`](HOW_TO_PLAY.txt) next to the executable and zips the
+folder, ready to upload. The build is for Linux, the system it is made on.
+
+### Run from the source code
+
+#### Requirements
 
 - **Python 3.12** or later
 - **[uv](https://docs.astral.sh/uv/)**, which installs pygame and the maze
   generator in a virtual environment
 
-### Install and run
+#### Install and run
 
 ```bash
 make install        # uv sync: creates .venv with every dependency
@@ -128,7 +161,8 @@ Cheat mode stays on from one level to the next until it is turned off.
 | `make debug` | Runs the game under `pdb` |
 | `make lint` | `flake8 .` and `mypy .` with the flags required by the subject |
 | `make lint-strict` | `flake8 .` and `mypy . --strict` |
-| `make clean` | Removes `__pycache__` and the mypy cache |
+| `make package` | Builds the packaged game in `dist/` (see above) |
+| `make clean` | Removes `__pycache__`, the mypy cache and PyInstaller's `build/` folder |
 
 ---
 

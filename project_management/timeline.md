@@ -31,6 +31,7 @@ gantt
     Game over and name entry screens              :done, 2026-10-10, 1d
     Points per ghost, new main loop               :done, 2026-10-13, 1d
     Cheat mode, lives from config, hitbox fix     :done, 2026-10-14, 1d
+    Packaging (PyInstaller spec), itch.io upload  :done, 2026-10-19, 1d
 
     section dvallada
     HUD and arcade font                           :done, 2026-09-28, 1d
@@ -39,9 +40,10 @@ gantt
     Config loader, Level class, one level per entry :done, 2026-10-07, 2d
     Multi-size levels, GameStats, victory, time limit :done, 2026-10-15, 1d
     Entry point, asset paths, lint clean, README  :done, 2026-10-18, 1d
+    Package with config and instructions, zip     :done, 2026-10-21, 1d
 
     section Both
-    Project management documents                  :active, 2026-10-19, 1d
+    Project management documents                  :done, 2026-10-19, 1d
 ```
 
 The red bar is the ghost movement rewrite, the main blocker of the project
@@ -66,6 +68,8 @@ The red bar is the ghost movement rewrite, the main blocker of the project
 | 13 | Levels of different sizes, spawn outside the "42", `GameStats` (score and lives kept between levels), victory screen, death when the time ends, cheat actions, minimum window size, real top 10 in the menu, highscore validation | 15 Oct | dvallada |
 | 14 | Entry point `pac-man.py`, asset paths independent of the working directory, pause -> main menu, final score on game over, `flake8` and `mypy --strict` clean, README | 18 Oct | dvallada |
 | 15 | Project management documents | 19 Oct | both |
+| 16 | Packaging with PyInstaller (`Pacman.spec`, `make package`) and upload to itch.io as a free, password-protected build | 19 Oct | imelero- |
+| 17 | Package fixes: `config.json` and `HOW_TO_PLAY.txt` inside the package, zip for the upload, no prompt when it is rebuilt | 21 Oct | dvallada |
 
 ## Milestones
 
@@ -80,7 +84,7 @@ The table shows when each milestone was actually reached, according to git.
 | Highscores, game over, name entry, loop back to the menu | 13 Oct |
 | Cheat mode | 14-15 Oct |
 | Victory screen, time limit, lint clean | 15-18 Oct |
-| Packaging and deployment | **not done yet** |
+| Packaging and deployment | 19-21 Oct |
 
 What the history shows:
 
@@ -92,9 +96,9 @@ What the history shows:
 - Supporting levels of different sizes (15 Oct) exposed bugs that had been
   hidden while every maze was 15x15 (see `blockers.md`).
 
-## Open items on 19 Oct
+## Open items on 21 Oct
 
 | Item | Why it matters |
 |------|----------------|
-| **Packaging script/spec at the repository root and deployment to Steam / Itch.io** | Required by the subject (chapter VII); nothing in the repository yet |
+| Upload the new `Pacman-linux.zip` to itch.io and remove the old file | The first upload was made before `config.json` and `HOW_TO_PLAY.txt` were added to the package |
 | Peer-review preparation: everyone must be able to explain every module (recode exercise) | See `risks.md` |

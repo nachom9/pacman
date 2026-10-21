@@ -77,7 +77,8 @@ Commit tested: `85e7fda` (18 Oct 2026). Date of the run: 19 Oct 2026.
 | Q1 | `flake8` on `src/` and `pac-man.py` | No errors | **Pass** (Auto, exit code 0) |
 | Q2 | `mypy` with the subject's flags, and `--strict` | No errors | **Pass** |
 | Q3 | `make install`, `run`, `debug`, `clean`, `lint` | All rules work | **Pass** |
-| P1 | Install and launch the packaged game from the public platform | Fully working | **Not done** |
+| P1 | Install and launch the packaged game from the public platform | Fully working | **Pass** |
+| P2 | `make package` twice in a row, then unzip `Pacman-linux.zip` in another folder and run `./Pacman config.json` | No prompt on the second build; the zip has `Pacman`, `_internal/`, `config.json` and `HOW_TO_PLAY.txt`; the game starts | **Pass** |
 
 ## Bugs found and fixed
 
