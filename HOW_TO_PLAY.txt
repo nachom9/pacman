@@ -1,0 +1,59 @@
+PAC-MAN - How to play
+=====================
+
+Linux build. No Python installation is needed.
+
+
+RUN THE GAME
+------------
+Open a terminal in this folder and run:
+
+    ./Pacman config.json
+
+The game needs exactly one argument: a configuration file (.json).
+A ready-to-use config.json is included next to the executable.
+
+
+CONTROLS
+--------
+Main menu      SPACE        Start a new game
+               Q            Instructions
+               ESC          Quit
+In game        Arrow keys   Move
+               ESC          Pause
+Pause          P or ESC     Resume
+               M            Back to the main menu (no score saved)
+End screens    SPACE        Continue to the name entry
+Name entry     A-Z 0-9 ' '  Type your name (max 10 characters)
+               ENTER        Save the score
+
+Eat every pacgum to clear the level. Eat a big pacgum in a corner to make
+the ghosts edible for a few seconds. Clear every level to win.
+
+
+CHEAT MODE (for the peer review)
+--------------------------------
+C   Cheat mode on / off: invincible (ghosts and time limit cannot kill you)
+N   (cheat mode) Skip the current level
+F   (cheat mode) Freeze / unfreeze the ghosts
+
+
+CONFIGURATION (config.json)
+---------------------------
+Standard JSON. Lines starting with # are comments.
+
+highscore_filename        File where the top 10 is saved  (default "highscores.json")
+lives                     Lives at the start              (default 3, min 1)
+points_per_pacgum         Points for a pacgum             (default 10)
+points_per_super_pacgum   Points for a big pacgum         (default 50)
+points_per_ghost          Points for eating a ghost       (default 200)
+seed                      Maze seed of level 1, next levels are random
+                          (default 42, 0 = random)
+level_max_time            Time limit per level in seconds (default 90, min 1)
+levels                    List of {"width": W, "height": H}, sizes 5 to 20,
+                          at least 10 levels (missing ones are added as 15x15)
+
+Invalid or missing values never stop the game: they are replaced by their
+default and a warning is printed in the terminal.
+
+The highscores file is created in the folder the game is launched from.

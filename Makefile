@@ -13,7 +13,7 @@ debug: install
 
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
-	rm -rf .mypy_cache .pytest_cache
+	rm -rf .mypy_cache .pytest_cache build
 
 lint: install
 	uv run python -m flake8 .
@@ -24,4 +24,6 @@ lint-strict: install
 	uv run python -m mypy . --strict
 
 package: install
-	uv run pyinstaller --clean --name Pacman --onedir --add-data "assets:assets" pac-man.py
+	uv run pyinstaller --clean --noconfirm Pacman.spec
+	cp config.json HOW_TO_PLAY.txt dist/Pacman/
+	cd dist && rm -f Pacman-linux.zip && zip -qr Pacman-linux.zip Pacman
