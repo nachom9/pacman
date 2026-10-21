@@ -16,8 +16,7 @@ Status: **Mitigated** (done in the code), **Open** (still to do).
 | 9 | The program crashes during the review because of an unhandled exception | M | H | Config, generator, assets and highscores are covered by `try`/validation | Partly open: the automated runs found no crash, but every screen still has to be played by hand |
 | 10 | Packaging and deployment to Steam / Itch.io are not finished | H | H | `Pacman.spec` at the root; `make package` builds `dist/Pacman/` and `dist/Pacman-linux.zip` with `config.json` and `HOW_TO_PLAY.txt`; the game is published on itch.io as a free, password-protected build | Mitigated. Tested (P1, P2) |
 | 11 | `flake8` or `mypy` fail on the final version | L | M | `flake8` and `mypy` pass; type hints and docstrings everywhere | Mitigated. Re-run `make lint` before submitting |
-| 12 | A team member cannot explain code written by the other (recode exercise) | M | H | Each one reviews and explains the other's modules before the defence. The history shows both worked on `level.py`, `__main__.py` and `ghosts.py` | **Open** |
-| 13 | Cheat mode does not let the reviewer reach every feature | L | M | `C` invincibility (also against the time limit), `N` skips the level, `F` freezes ghosts; lives and time are changed in the config | Mitigated. Manual check pending (X1-X5) |
+| 12 | Cheat mode does not let the reviewer reach every feature | L | M | `C` invincibility (also against the time limit), `N` skips the level, `F` freezes ghosts; lives and time are changed in the config | Mitigated.
 
 Note on 7: asset loading was not run in the automated checks because `pygame`
 could not be installed in the environment used for them.
