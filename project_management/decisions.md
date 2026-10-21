@@ -15,7 +15,7 @@ Several files were edited by both (`level.py`, `__main__.py`, `ghosts.py`,
 explain them.
 
 - **How we worked:** short feature branches (`ghosts-flee`, `screens`,
-  `nacho`, and `final-fixes` for the last fixes) merged into `main`; the team board is GitHub Projects / Issues.
+  `nacho`, and `final-fixes` for the last fixes) merged into `main`.
 - **How decisions were taken:** we met in person to discuss and make decisions
   together, and stayed in touch via chat every day to share our progress,
   coordinate tasks, make quick decisions as needed, and ensure we stayed

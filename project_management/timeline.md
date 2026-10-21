@@ -1,7 +1,7 @@
 # Timeline and progress tracking
 
 Source of truth for the real dates: the git history of the repository
-(68 commits, 17 Sep - 18 Oct 2026, branches `main`, `ghosts-flee`, `nacho`,
+(79 commits, 17 Sep - 21 Oct 2026, branches `main`, `ghosts-flee`, `nacho`,
 `screens` and `final-fixes`). Check with `git log --date=short`.
 
 ## Tools
@@ -73,8 +73,7 @@ The red bar is the ghost movement rewrite, the main blocker of the project
 
 ## Milestones
 
-We did not set deadlines in advance. We worked feature by feature, using
-the subject as a checklist, and agreed on the next steps in our meetings.
+No written initial plan. We planned week by week in our meetings and met the weekly goals; bugs cost us 1-2 days at most. We worked feature by feature, using the subject as a checklist, and agreed on the next steps in our meetings.
 The table shows when each milestone was actually reached, according to git.
 
 | Milestone | Reached |
@@ -95,10 +94,3 @@ What the history shows:
   forced a redesign instead of a fix.
 - Supporting levels of different sizes (15 Oct) exposed bugs that had been
   hidden while every maze was 15x15 (see `blockers.md`).
-
-## Open items on 21 Oct
-
-| Item | Why it matters |
-|------|----------------|
-| Upload the new `Pacman-linux.zip` to itch.io and remove the old file | The first upload was made before `config.json` and `HOW_TO_PLAY.txt` were added to the package |
-| Peer-review preparation: everyone must be able to explain every module (recode exercise) | See `risks.md` |
